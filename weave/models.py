@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 from weave.managers import *
 
 class WeaveManifest(models.Model):
@@ -53,13 +54,15 @@ class ClientConfiguration(models.Model):
         ('xml', 'xml'),
         ('file', 'file')
     )
+    user = models.ForeignKey(User)
     name = models.CharField(max_length=100)
-    slug = models.SlugField(unique=True, db_index=True)
+    slug = models.SlugField(unique=True, db_index=True, blank=True)
     content = models.TextField(default='', blank=True)
     # name of the file, relative to Tomcat's/weave's docroot. This will be passed on as
     # as a url to the weave client
     content_file = models.CharField(max_length=100, unique=True, null=True, blank=True)
     content_format = models.CharField(max_length=4, choices=FORMAT_CHOICES, default='file')
+    is_public = models.BooleanField(default=False)
 
     def cc_type(self):
         is_user_generated = self.weavefile_set.all().count() > 0
@@ -67,8 +70,8 @@ class ClientConfiguration(models.Model):
         in_report = self.report_set.all().count() > 0
 
         return 'ug: %s / ds: %s / rpt: %s' % (is_user_generated, in_datastory, in_report)
-    cc_type.short_description = 'CC Type'
 
+    cc_type.short_description = 'CC Type'
 
     def save(self, *args, **kwargs):
         from weave.util import unique_slugify

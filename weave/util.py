@@ -1,6 +1,6 @@
 import re
 from django.template.defaultfilters import slugify
-
+import warnings
 
 # http://www.djangosnippets.org/snippets/690/
 def unique_slugify(instance, value, slug_field_name='slug', queryset=None,
@@ -72,4 +72,15 @@ def _slug_strip(value, separator='-'):
         value = re.sub(r'^%s+|%s+$' % (re_sep, re_sep), '', value)
     return value
 
-
+def deprecated(func):
+    """This is a decorator which can be used to mark functions
+    as deprecated. It will result in a warning being emmitted
+    when the function is used."""
+    def newFunc(*args, **kwargs):
+        warnings.warn("Call to deprecated function %s." % func.__name__,
+                      category=DeprecationWarning, stacklevel=2)
+        return func(*args, **kwargs)
+    newFunc.__name__ = func.__name__
+    newFunc.__doc__ = func.__doc__
+    newFunc.__dict__.update(func.__dict__)
+    return newFunc
