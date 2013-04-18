@@ -75,7 +75,20 @@ def save_client_config(request, config_slug):
 
     return HttpResponse(json.dumps(result), mimetype="application/json")
 
+def embed_weave(request):
+    """ A view that loads a Weave Instance.
+        if there is a wf (a weave file on disk) we ignore an client configs what may also be passed to the view.
+    """
+    ctx = {}
+    ctx['authenicated'] = request.user.is_authenticated()
 
+    weave_config = request.GET.get('wf', "default.xml") # what is default?
+    c_config = request.GET.get('cc', None)
+
+    ctx['weave_config'] = weave_config
+    ctx['client_config'] = c_config
+
+    return render_to_response('weave.html', ctx)
 
 
 

@@ -1,0 +1,85 @@
+{% load staticfiles %}
+<!DOCTYPE html">
+<html> 
+    <head>
+        <title>weave</title>
+        <style type="text/css" media="screen"> 
+            html, body  { height:100%; }
+            body { margin:0; padding:0; overflow:auto; text-align:center; 
+                   background-color: #7B96B6; }   
+            object:focus { outline:none; }
+            #flashContent { display:none; }
+        </style>
+        
+	<script type="text/javascript" src="http://127.0.0.1:8080/swfobject.js"></script>
+	<script type="text/javascript" src="{% static 'js/dh-weave.js' %}"></script>
+	<script type="text/javascript">
+		var weaveReady = function(myWeave) {
+			DHWEAVE.setWeaveObj(myWeave);
+		}
+
+		var swfVersionStr = "10.2.0";
+		var xiSwfUrlStr = "playerProductInstall.swf";
+		var flashvars = {};
+		var params = {};
+		params.quality = "high";
+		params.bgcolor = "#7B96B6";
+		params.allowscriptaccess = "sameDomain";
+		params.allowfullscreen = "true";
+		params.base = "http://127.0.0.1:8080/";
+		var attributes = {};
+		attributes.id = "weave";
+		attributes.name = "weave";
+		attributes.align = "middle";
+		swfobject.embedSWF(
+		"http://127.0.0.1:8080/weave.swf", "flashContent", 
+		"100%", "100%", 
+		swfVersionStr, xiSwfUrlStr, 
+		flashvars, params, attributes);
+		swfobject.createCSS("#flashContent", "display:block;text-align:left;");
+        </script>
+    </head>
+    <body>
+        <div id="flashContent">
+            <p>
+                To view this page ensure that Adobe Flash Player version 
+                10.2.0 or greater is installed. 
+            </p>
+            <script type="text/javascript"> 
+                var pageHost = ((document.location.protocol == "https:") ? "https://" : "http://"); 
+                document.write("<a href='http://www.adobe.com/go/getflashplayer'><img src='" 
+                                + pageHost + "www.adobe.com/images/shared/download_buttons/get_flash_player.gif' alt='Get Adobe Flash player' /></a>" ); 
+            </script> 
+        </div>
+        
+        <noscript>
+            <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="100%" height="100%" id="weave">
+                <param name="movie" value="weave.swf" />
+                <param name="quality" value="high" />
+                <param name="bgcolor" value="#7B96B6" />
+                <param name="allowScriptAccess" value="sameDomain" />
+                <param name="allowFullScreen" value="true" />
+                <!--[if !IE]>-->
+                <object type="application/x-shockwave-flash" data="weave.swf" width="100%" height="100%">
+                    <param name="quality" value="high" />
+                    <param name="bgcolor" value="#7B96B6" />
+                    <param name="allowScriptAccess" value="sameDomain" />
+                    <param name="allowFullScreen" value="true" />
+                <!--<![endif]-->
+                <!--[if gte IE 6]>-->
+                    <p> 
+                        Either scripts and active content are not permitted to run or Adobe Flash Player version
+                        10.2.0 or greater is not installed.
+                    </p>
+                <!--<![endif]-->
+                    <a href="http://www.adobe.com/go/getflashplayer">
+                        <img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Get Adobe Flash Player" />
+                    </a>
+                <!--[if !IE]>-->
+                </object>
+                <!--<![endif]-->
+            </object>
+    </noscript> 
+
+   </body>
+</html>
