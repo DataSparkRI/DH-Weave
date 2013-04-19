@@ -11,7 +11,7 @@
             #flashContent { display:none; }
         </style>
         
-	<script type="text/javascript" src="http://127.0.0.1:8080/swfobject.js"></script>
+	<script type="text/javascript" src="{{weave_root}}swfobject.js"></script>
 	<script type="text/javascript" src="{% static 'js/dh-weave.js' %}"></script>
 	<script type="text/javascript">
 		var weaveReady = function(myWeave) {
@@ -26,14 +26,13 @@
 		params.bgcolor = "#7B96B6";
 		params.allowscriptaccess = "sameDomain";
 		params.allowfullscreen = "true";
-		params.base = "http://127.0.0.1:8080/";
+		params.base = "{{weave_root}}";
 		var attributes = {};
 		attributes.id = "weave";
 		attributes.name = "weave";
 		attributes.align = "middle";
-		swfobject.embedSWF(
-		"http://127.0.0.1:8080/weave.swf", "flashContent", 
-		"100%", "100%", 
+		swfobject.embedSWF("{{weave_root}}weave.swf", "flashContent",
+			       	"100%", "100%", 
 		swfVersionStr, xiSwfUrlStr, 
 		flashvars, params, attributes);
 		swfobject.createCSS("#flashContent", "display:block;text-align:left;");

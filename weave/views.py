@@ -81,14 +81,17 @@ def embed_weave(request):
     """
     ctx = {}
     ctx['authenicated'] = request.user.is_authenticated()
+    viz = request.GET.get('viz', None)
+    #weave_config = request.GET.get('wf', "default.xml") # what is default?
+    #c_config = request.GET.get('cc', None)
+    referer = request.GET.get('ref', None)
 
-    weave_config = request.GET.get('wf', "default.xml") # what is default?
-    c_config = request.GET.get('cc', None)
+    #ctx['weave_config'] = weave_config
+    #ctx['client_config'] = c_config
+    ctx['weave_root'] = getattr(settings,'WEAVE_ROOT', "http://127.0.0.1:8080/") # SETTING
+    ctx['referer'] = referer
 
-    ctx['weave_config'] = weave_config
-    ctx['client_config'] = c_config
-
-    return render_to_response('weave.html', ctx)
+    return render_to_response('weave.html', ctx, context_instance=RequestContext(request))
 
 
 

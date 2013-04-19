@@ -32,20 +32,6 @@ extend(DHWEAVE, {
 		
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // extend.js
 // written by andrew dupont, optimized by addy osmani
 function extend(destination, source) {
