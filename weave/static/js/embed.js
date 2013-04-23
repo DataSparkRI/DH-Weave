@@ -19,8 +19,6 @@ extend(DHWEAVE,{
 		iF.width = "100%";
 		iF.src = "http://127.0.0.1:8000/weave/embed?"+ VIZ + "&ref="  +ref;
 		var targ = document.getElementById(DHW_ID);
-		
-
 		targ.appendChild(iF);
 
 	}

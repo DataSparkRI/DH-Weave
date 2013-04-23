@@ -2,7 +2,14 @@ from django.db import models
 from django.contrib.auth.models import User
 from weave.managers import *
 
+
+
+class HubEntityIndex(models.Model):
+    """ A foreign key index for all Hub Created Weave Meta Fields """
+    created_at = models.DateTimeField(auto_now_add=True)
+
 class WeaveManifest(models.Model):
+    h_e_index = models.ForeignKey(HubEntityIndex, null=True)
     entity_id = models.AutoField(primary_key=True)
     type_id = models.SmallIntegerField()
 
@@ -15,6 +22,7 @@ class WeaveManifest(models.Model):
 
 class WeaveMeta(models.Model):
     """ Abstract class for weave_meta_private and weave_meta_public"""
+    h_e_index = models.ForeignKey(HubEntityIndex, null=True)
     entity_id = models.BigIntegerField() # this is not a ForiegnKey on purpose
     meta_name = models.CharField(max_length=255, db_index=True)
     meta_value = models.CharField(max_length=2048, blank=True, db_index=True)
@@ -36,6 +44,7 @@ class WeaveMetaPrivate(WeaveMeta):
 
 
 class WeaveHierarchy(models.Model):
+    h_e_index = models.ForeignKey(HubEntityIndex, null=True)
     parent_id = models.BigIntegerField()
     child_id = models.BigIntegerField()
     sort_order = models.IntegerField()
@@ -45,7 +54,6 @@ class WeaveHierarchy(models.Model):
 
     def __unicode__(self):
         return "parent_id:{0} child_id:{1}".format(self.parent_id, self.child_id)
-
 
 
 class ClientConfiguration(models.Model):
@@ -132,3 +140,4 @@ class CCUnassigned(ClientConfiguration):
         return "%s" % self.name
 
     objects = CCUnassignedManager()
+
