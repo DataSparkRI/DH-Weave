@@ -1,6 +1,7 @@
 import re
 from django.template.defaultfilters import slugify
 import warnings
+from weave.models import *
 
 # http://www.djangosnippets.org/snippets/690/
 def unique_slugify(instance, value, slug_field_name='slug', queryset=None,
@@ -84,3 +85,6 @@ def deprecated(func):
     newFunc.__doc__ = func.__doc__
     newFunc.__dict__.update(func.__dict__)
     return newFunc
+
+
+
