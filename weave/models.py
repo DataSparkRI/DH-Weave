@@ -56,6 +56,40 @@ class WeaveHierarchy(models.Model):
         return "parent_id:{0} child_id:{1}".format(self.parent_id, self.child_id)
 
 
+class DataFilter(models.Model):
+    file = models.FileField(upload_to='data_filter_files', blank=True)
+    name = models.CharField(max_length=100, unique=True)
+    display = models.BooleanField(default=True)
+    key_unit_type = models.CharField(max_length=256)
+
+    def save(self, *args, **kwargs):
+        super(DataFilter, self).save(*args, **kwargs)
+
+        # clear out exiting data keys
+        DataFilterKey.objects.filter(data_filter=self).delete()
+        # read the file and generate DataFilterKeys
+        self.file.open()
+        for l in self.file.readlines():
+            # strip out leading and trailing white spaces
+            l = l.strip()
+            # only save non empty strings
+            if l != "":
+                self.datafilterkey_set.create(key_value=l)
+
+        self.file.close()
+
+    def __unicode__(self):
+        return self.name
+
+
+class DataFilterKey(models.Model):
+    data_filter = models.ForeignKey(DataFilter)
+    key_value = models.CharField(max_length=100)
+
+    def __unicode__(self):
+        return u"%s - %s" % (self.data_filter, self.key_value)
+
+
 class ClientConfiguration(models.Model):
     FORMAT_CHOICES = (
         ('json', 'json'),
