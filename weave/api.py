@@ -2,7 +2,7 @@ from weave.models import *
 from django.conf import settings
 
 WEAVE_SETTINGS = getattr(settings, "WEAVE", {})
-WEAVE_CONNECTION = getattr(WEAVE_SETTINGS, 'CONNECTION', "local")
+WEAVE_CONNECTION = getattr(WEAVE_SETTINGS, 'CONNECTION', "portal_db")
 
 def get_or_create_data_table(tbl_name):
     """ get or create a new data table into Weave Meta info
@@ -51,17 +51,16 @@ def get_or_create_data_table(tbl_name):
         return w_manifest.pk
 
 
-def insert_data_row(parent_id, title, data_type, sql_query):
+def insert_data_row(parent_id, title, name, data_type, sql_query, object_id, year, data_table=None):
     """ Insert a data entity and create relationship to parent entity
         This should create
             1 HubEntityIndex
             1 Weave Manifest
             1 WeaveHeirchy
             5 WeaveMetaPrivate
-            2 WeaveMetaPublic
+            3 WeaveMetaPublic
     """
     sync_db_sequence()
-
     REQUIRED_PRIVATE_META = (
         ('sqlQuery', sql_query),
         ('sqlSchema', 'public'),
@@ -71,11 +70,21 @@ def insert_data_row(parent_id, title, data_type, sql_query):
 
     )
 
-    REQUIRED_PUBLIC_META = (
-        ('title', title),
-        ('dataType', data_type),
+    if data_type=="numeric":
+        data_type = "number"
 
+    REQUIRED_PUBLIC_META = (
+        ('title', title), # the title
+        ('name', name), # the title
+        ('dataType', data_type), # number or string
+        ('object_id', object_id), # to ease the transition. In datahub this is our Indicator Id
+        ('year', year), # to ease the transition. In datahub this is our Indicator Id
     )
+
+    if data_table is not None:
+        REQUIRED_PUBLIC_META += (
+            ('dataTable', data_table),
+        )
 
     hei = HubEntityIndex()
     hei.save()
@@ -118,8 +127,8 @@ def get_hierarchy_as_xml():
         for h_obj in WeaveHierarchy.objects.filter(parent_id=p.parent_id):
             title = WeaveMetaPublic.objects.get(entity_id=h_obj.child_id, meta_name="title").meta_value
             datatype = WeaveMetaPublic.objects.get(entity_id=h_obj.child_id, meta_name="dataType").meta_value
-            xml.add_attribute(title, datatype, h_obj.child_id)
-
+            object_id = WeaveMetaPublic.objects.get(entity_id=h_obj.child_id, meta_name="object_id").meta_value
+            xml.add_attribute(title, datatype, h_obj.child_id, object_id)
 
         out += xml.render()
 
@@ -148,16 +157,16 @@ class WeaveXMLSet():
         self.weave_entity_id = weave_entity_id
         self.attributes = []
 
-    def add_attribute(self, title, datatype, weave_entity_id=None):
+    def add_attribute(self, title, datatype, weave_entity_id=None, object_id=None):
         self.attributes.append({
             'title':title,
             'datatype':datatype,
             'weave_entity_id':weave_entity_id if weave_entity_id is not None else self.get_weave_entity_id(title),
+            'object_id': object_id or '0000'
         })
 
     def get_weave_entity_id(self, title):
         """ Look up a for realz weave entity id by title"""
-        print title
         return WeaveMetaPublic.objects.get(meta_name='title', meta_value=title).entity_id
 
     def render(self):
@@ -165,7 +174,7 @@ class WeaveXMLSet():
         cat_foot = """</category>"""
         attrs_nodes = ""
         for atr in self.attributes:
-            node = """<attribute title="{title}" dataType="{datatype}" weaveEntityId="{weave_entity_id}"/>""".format(**atr)
+            node = """<attribute title="{title}" dataType="{datatype}" weaveEntityId="{weave_entity_id}" object_id="{object_id}"/>""".format(**atr)
             attrs_nodes += node + "\n"
 
         return "%s\n%s%s\n" % (cat_head, attrs_nodes, cat_foot)

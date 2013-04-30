@@ -20,31 +20,31 @@ class APITest(TestCase):
 
 
     def test_insert_data_row(self):
-        insert_data_row(1, "test", 1, sql_query="SELECT * FROM TEST")
+        insert_data_row(1, "test", 1, sql_query="SELECT * FROM TEST", object_id='1')
         # now we can just count the expected tables
         self.assertEqual(HubEntityIndex.objects.all().count(), 1)
         hei = HubEntityIndex.objects.all()[0]
         self.assertEqual(hei.weavemanifest_set.all().count(), 1)
         self.assertEqual(hei.weavemetaprivate_set.all().count(), 5)
         self.assertEqual(hei.weavehierarchy_set.all().count(), 1)
-        self.assertEqual(hei.weavemetapublic_set.all().count(), 2)
+        self.assertEqual(hei.weavemetapublic_set.all().count(), 3)
         clear_generated_meta()
 
     def test_xml_hierachy(self):
         p1 = get_or_create_data_table("testtable1")
         p2 = get_or_create_data_table("testtable2")
         p3 = get_or_create_data_table("testtable3")
+        insert_data_row(p1, "test", 1, sql_query="SELECT * FROM TEST", object_id="1")
+        insert_data_row(p2, "te33333st", 1, sql_query="SELECT * FROM TEST",object_id="2")
+        insert_data_row(p3, "te33st", 1, sql_query="SELECT * FROM TEST",object_id="3")
+        insert_data_row(p3, "tesdafdt", 1, sql_query="SELECT * FROM TEST", object_id="4")
+        insert_data_row(p3, "terae", 1, sql_query="SELECT * FROM TEST", object_id="5")
 
-        insert_data_row(p1, "test", 1, sql_query="SELECT * FROM TEST")
-        insert_data_row(p2, "te33333st", 1, sql_query="SELECT * FROM TEST")
-        insert_data_row(p3, "te33st", 1, sql_query="SELECT * FROM TEST")
-        insert_data_row(p3, "tesdafdt", 1, sql_query="SELECT * FROM TEST")
-        insert_data_row(p3, "terae", 1, sql_query="SELECT * FROM TEST")
-
-        expected = '<category title="testtable1" weaveEntityId="1" >\n<attribute title="test" dataType="1" weaveEntityId="4"/>\n</category>\n<category title="testtable2" weaveEntityId="2" >\n<attribute title="te33333st" dataType="1" weaveEntityId="5"/>\n</category>\n<category title="testtable3" weaveEntityId="3" >\n<attribute title="te33st" dataType="1" weaveEntityId="6"/>\n<attribute title="tesdafdt" dataType="1" weaveEntityId="7"/>\n<attribute title="terae" dataType="1" weaveEntityId="8"/>\n</category>\n'
+        expected = '<category title="testtable1" weaveEntityId="1" >\n<attribute title="test" dataType="1" weaveEntityId="4" object_id="1"/>\n</category>\n<category title="testtable2" weaveEntityId="2" >\n<attribute title="te33333st" dataType="1" weaveEntityId="5" object_id="2"/>\n</category>\n<category title="testtable3" weaveEntityId="3" >\n<attribute title="te33st" dataType="1" weaveEntityId="6" object_id="3"/>\n<attribute title="tesdafdt" dataType="1" weaveEntityId="7" object_id="4"/>\n<attribute title="terae" dataType="1" weaveEntityId="8" object_id="5"/>\n</category>\n'
 
         #print get_hierarchy_as_xml()
         self.assertEqual(get_hierarchy_as_xml(), expected)
+        clear_generated_meta()
 
     def test_custom_xml_hierarchy(self):
         items = [{
@@ -52,7 +52,7 @@ class APITest(TestCase):
             'datatype':'string',
             'weave_entity_id':'5',
         }]
-        expected='<category title="TestCat" weaveEntityId="99999" >\n<attribute title="test1" dataType="string" weaveEntityId="5"/>\n</category>\n'
+        expected='<category title="TestCat" weaveEntityId="99999" >\n<attribute title="test1" dataType="string" weaveEntityId="5" object_id="0000"/>\n</category>\n'
 
         self.assertEqual(get_custom_hierarchy_as_xml('TestCat', items), expected)
 
