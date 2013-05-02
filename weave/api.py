@@ -51,7 +51,7 @@ def get_or_create_data_table(tbl_name):
         return w_manifest.pk
 
 
-def insert_data_row(parent_id, title, name, data_type, sql_query, object_id, year, data_table=None):
+def insert_data_row(parent_id, title, name, data_type, sql_query, object_id, year, data_table=None, min=None, max=None):
     """ Insert a data entity and create relationship to parent entity
         This should create
             1 HubEntityIndex
@@ -79,6 +79,8 @@ def insert_data_row(parent_id, title, name, data_type, sql_query, object_id, yea
         ('dataType', data_type), # number or string
         ('object_id', object_id), # to ease the transition. In datahub this is our Indicator Id
         ('year', year), # to ease the transition. In datahub this is our Indicator Id
+        ('min', min or ''),
+        ('max', max or ''),
     )
 
     if data_table is not None:
