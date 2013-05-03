@@ -117,24 +117,36 @@ def clear_generated_meta():
 
 def get_hierarchy_as_xml():
     """ Return weave data heirchy as xml categories """
-    out = ""
+    out = u' '
     parent_ids = WeaveHierarchy.objects.all().distinct('parent_id')
 
     for p in parent_ids:
         p_meta = WeaveMetaPublic.objects.get(entity_id=p.parent_id, meta_name="title")
         xml = WeaveXMLSet(p_meta.meta_value, p.parent_id)
-
         # now add attibute nodes
         # get all the Heirarchy objects that belong to this parent id
-        for h_obj in WeaveHierarchy.objects.filter(parent_id=p.parent_id):
-            title = WeaveMetaPublic.objects.get(entity_id=h_obj.child_id, meta_name="title").meta_value
-            datatype = WeaveMetaPublic.objects.get(entity_id=h_obj.child_id, meta_name="dataType").meta_value
-            object_id = WeaveMetaPublic.objects.get(entity_id=h_obj.child_id, meta_name="object_id").meta_value
-            xml.add_attribute(title, datatype, h_obj.child_id, object_id)
-
-        out += xml.render()
-
+        for h_obj in get_hierarchy_items(p.parent_id):
+            xml.add_attribute(**h_obj)
+        #out += xml.render()
     return out
+
+
+def get_hierarchy_items(parent_id):
+    for h_obj in WeaveHierarchy.objects.filter(parent_id=parent_id):
+        title = WeaveMetaPublic.objects.get(entity_id=h_obj.child_id, meta_name="title").meta_value
+        datatype = WeaveMetaPublic.objects.get(entity_id=h_obj.child_id, meta_name="dataType").meta_value
+        y_kwargs = {
+            'title':title,
+            'datatype':datatype,
+            'weave_entity_id':h_obj.child_id,
+        }
+        try:
+            object_id = WeaveMetaPublic.objects.get(entity_id=h_obj.child_id, meta_name="object_id").meta_value
+            y_kwargs['object_id'] = object_id
+        except WeaveMetaPublic.DoesNotExist:
+            pass
+
+        yield y_kwargs
 
 def get_custom_hierarchy_as_xml(title, hierarchy_list_items):
     """ Generate a custom hierarchy bases on the the h_list_items
@@ -148,7 +160,6 @@ def get_custom_hierarchy_as_xml(title, hierarchy_list_items):
     xml = WeaveXMLSet(title=title, weave_entity_id="99999")
     for item in hierarchy_list_items:
         xml.add_attribute(**item)
-
     return xml.render()
 
 
@@ -163,7 +174,7 @@ class WeaveXMLSet():
         self.attributes.append({
             'title':title,
             'datatype':datatype,
-            'weave_entity_id':weave_entity_id if weave_entity_id is not None else self.get_weave_entity_id(title),
+            'weave_entity_id':weave_entity_id if weave_entity_id is not None else 0,
             'object_id': object_id or '0000'
         })
 
@@ -172,14 +183,14 @@ class WeaveXMLSet():
         return WeaveMetaPublic.objects.get(meta_name='title', meta_value=title).entity_id
 
     def render(self):
-        cat_head = """<category title="{0}" weaveEntityId="{1}" >""".format(self.title, self.weave_entity_id)
-        cat_foot = """</category>"""
-        attrs_nodes = ""
+        cat_head = u"""<category title="{0}" weaveEntityId="{1}" >""".format(self.title, self.weave_entity_id)
+        cat_foot = u"""</category>"""
+        attrs_nodes = u""
         for atr in self.attributes:
-            node = """<attribute title="{title}" dataType="{datatype}" weaveEntityId="{weave_entity_id}" object_id="{object_id}"/>""".format(**atr)
-            attrs_nodes += node + "\n"
+            node = u"""<attribute title="{title}" dataType="{datatype}" weaveEntityId="{weave_entity_id}" object_id="{object_id}"/>""".format(**atr)
+            attrs_nodes += node + u"\n"
 
-        return "%s\n%s%s\n" % (cat_head, attrs_nodes, cat_foot)
+        return u"%s\n%s%s\n" % (cat_head, attrs_nodes, cat_foot)
 
 
 
@@ -214,86 +225,3 @@ def sync_db_sequence():
     cursor.execute(capture.result)
 
 
-class ClientConfiguration(models.Model):
-    FORMAT_CHOICES = (
-        ('json', 'json'),
-        ('xml', 'xml'),
-        ('file', 'file')
-    )
-    name = models.CharField(max_length=100)
-    slug = models.SlugField(unique=True, db_index=True)
-    content = models.TextField(default='', blank=True)  # TODO: add minimal config
-    # name of the file, relative to Tomcat's/weave's docroot. This will be passed on as
-    # as a url to the weave client
-    content_file = models.CharField(max_length=100, unique=True, null=True, blank=True)
-    content_format = models.CharField(max_length=4, choices=FORMAT_CHOICES, default='file')
-
-    def cc_type(self):
-        is_user_generated = self.weavefile_set.all().count() > 0
-        in_datastory = self.page_set.all().count() > 0
-        in_report = self.report_set.all().count() > 0
-
-        return 'ug: %s / ds: %s / rpt: %s' % (is_user_generated, in_datastory, in_report)
-
-    cc_type.short_description = 'CC Type'
-
-    def save(self, *args, **kwargs):
-        from weave.util import unique_slugify
-        unique_slugify(self, self.name)
-        super(ClientConfiguration, self).save(*args, **kwargs)
-
-    @property
-    def location_for_client(self):
-        """ The url or path that should be passed to the Weave client to load this config """
-
-        if self.content_format not in ('file', ):
-            raise NotImplemented('Only file-based configs may be saved at this time')
-
-        return "/weave_docroot/%s" % self.content_file
-
-    def __unicode__(self):
-        return "%s" % self.name
-
-class CCDataStory(ClientConfiguration):
-    class Meta:
-        proxy = True
-        verbose_name_plural = 'Client configurations (Datastory)'
-        verbose_name = 'Client configuration (Datastory)'
-
-    def __unicode__(self):
-        return "%s" % self.name
-
-    objects = CCDataStoryManager()
-
-class CCReport(ClientConfiguration):
-    class Meta:
-        proxy = True
-        verbose_name_plural = 'Client configurations (Report)'
-        verbose_name = 'Client configuration (Report)'
-
-    def __unicode__(self):
-        return "%s" % self.name
-
-    objects = CCReportManager()
-
-class CCUserGenerated(ClientConfiguration):
-    class Meta:
-        proxy = True
-        verbose_name_plural = 'Client configurations (User-generated)'
-        verbose_name = 'Client configuration (User-generated)'
-    def __unicode__(self):
-        return "%s" % self.name
-
-    objects = CCUserGeneratedManager()
-
-
-class CCUnassigned(ClientConfiguration):
-    class Meta:
-        proxy = True
-        verbose_name_plural = 'Client configurations (Unassigned)'
-        verbose_name = 'Client configuration (Unassigned)'
-
-    def __unicode__(self):
-        return "%s" % self.name
-
-    objects = CCUnassignedManager()

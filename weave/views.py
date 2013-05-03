@@ -16,8 +16,21 @@ def client_config(request, config_slug):
     return HttpResponse(config.get_xml(), mimetype="application/xml")
 
 
+def get_user_configs(request):
+    # get a list of user configurations
+    results = {}
+    if request.user.is_authenticated():
+        configs = ClientConfiguration.objects.filter(user=request.user).only('slug', 'name')
+        for conf in configs:
+            print conf
+    else:
+        pass
+    return HttpResponse(json.dumps(results), mimetype="application/json")
+
+
+
 def get_client_config(request, config_slug):
-    """ Return client configs stored in the database """
+    """ Return client configs storede in the database """
     try:
         # find the client config by slug, if its public continue else, check
         # for to see if the user is the right one
@@ -78,6 +91,7 @@ def save_client_config(request, config_slug):
 def embed_weave(request):
     """ A view that loads a Weave Instance.
         if there is a wf (a weave file on disk) we ignore an client configs what may also be passed to the view.
+        Also we check to see where the referer is coming from. If its from datahub then we want to display some extra ui, if not we can display links to datahub.
     """
     ctx = {}
     ctx['authenicated'] = request.user.is_authenticated()
@@ -85,11 +99,13 @@ def embed_weave(request):
     #weave_config = request.GET.get('wf', "default.xml") # what is default?
     #c_config = request.GET.get('cc', None)
     referer = request.GET.get('ref', None)
+    if referer == settings.DATAHUB_HOST:
+        dh_refered = True
+    else:
+        dh_refered = False
 
-    #ctx['weave_config'] = weave_config
-    #ctx['client_config'] = c_config
-    ctx['weave_root'] = getattr(settings,'WEAVE_ROOT', "http://127.0.0.1:8080/") # SETTING
-    ctx['referer'] = referer
+    ctx['weave_root'] = getattr(settings,'WEAVE_ROOT', "http://127.0.0.1:8081/") # SETTING
+    ctx['dh_refered'] = dh_refered
 
     return render_to_response('weave.html', ctx, context_instance=RequestContext(request))
 

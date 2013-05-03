@@ -17,6 +17,30 @@ extend(DHWEAVE, {
 		
 	},
 
+	getSessionDataSources:function(){
+		var self = this;
+		// iterate the session state objects and return the DataSources member attribute column
+		var stateList = self.Settings.WObj.path().getState();
+		var state;
+		for(var i in stateList){	
+			state = stateList[i];
+			if(state.objectName === "WeaveDataSource"){
+				break;
+			}
+		}
+		return state;
+	},
+	updateSessionDataSources:function(label, data){
+		var self = this;
+		var newState = {
+			attributeHierarchy : '<hierarchy name="User Items"><category title="Nested"></category></hierarchy>'	
+		}
+		self.Settings.WObj.path()
+		.push(label)
+		.request('WeaveDataSource')
+		.state(newState);
+	},
+
 	loadSessionState:function(){
 		var self = this;
 
@@ -29,6 +53,11 @@ extend(DHWEAVE, {
 	saveClientConfig:function(name, callback){
 		var self = this;
 	},
+
+	getUserConfigs:function(callback){
+		var self = this;
+			
+	},	
 		
 });
 

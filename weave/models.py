@@ -1,7 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from weave.managers import *
-
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes import generic
 
 
 class HubEntityIndex(models.Model):
@@ -96,7 +97,7 @@ class ClientConfiguration(models.Model):
         ('xml', 'xml'),
         ('file', 'file')
     )
-    user = models.ForeignKey(User)
+    content_object = generic.GenericForeignKey('content_type', 'object_id') # Generic relationship to lots of different models.
     name = models.CharField(max_length=100)
     slug = models.SlugField(unique=True, db_index=True, blank=True)
     content = models.TextField(default='', blank=True)
@@ -104,7 +105,7 @@ class ClientConfiguration(models.Model):
     # as a url to the weave client
     content_file = models.CharField(max_length=100, unique=True, null=True, blank=True)
     content_format = models.CharField(max_length=4, choices=FORMAT_CHOICES, default='file')
-    is_public = models.BooleanField(default=False)
+    is_public = models.NullBooleanField(default=False, null=True, blank=True)
 
     def cc_type(self):
         is_user_generated = self.weavefile_set.all().count() > 0

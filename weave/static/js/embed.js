@@ -17,6 +17,7 @@ extend(DHWEAVE,{
 		var iF = document.createElement('iframe');
 		iF.height = "100%";
 		iF.width = "100%";
+		iF.scrolling="no";
 		iF.src = "http://127.0.0.1:8000/weave/embed?"+ VIZ + "&ref="  +ref;
 		var targ = document.getElementById(DHW_ID);
 		targ.appendChild(iF);

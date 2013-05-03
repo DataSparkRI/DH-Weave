@@ -4,38 +4,42 @@
     <head>
         <title>weave</title>
         <style type="text/css" media="screen"> 
-            html, body  { height:100%; }
-            body { margin:0; padding:0; overflow:auto; text-align:center; 
+            	html, body  { height:100%; }
+           	body { margin:0; padding:0; overflow:auto; text-align:center; 
                    background-color: #7B96B6; }   
-            object:focus { outline:none; }
-            #flashContent { display:none; }
+            	object:focus { outline:none;}
+		#flashContent { display:none;}
         </style>
         
+    	{% if dh_refered %}
+	<link rel="stylesheet" href="{% static 'css/dh-weave.css' %}" type="text/css" media="screen" title="no title" charset="utf-8">
+	{% endif %}
 	<script type="text/javascript" src="{{weave_root}}swfobject.js"></script>
 	<script type="text/javascript" src="{% static 'js/dh-weave.js' %}"></script>
 	<script type="text/javascript">
 		var weaveReady = function(myWeave) {
 			DHWEAVE.setWeaveObj(myWeave);
 		}
-
 		var swfVersionStr = "10.2.0";
-		var xiSwfUrlStr = "playerProductInstall.swf";
+		var xiSwfUrlStr = "{{weave_root}}playerProductInstall.swf";
 		var flashvars = {};
 		var params = {};
 		params.quality = "high";
 		params.bgcolor = "#7B96B6";
 		params.allowscriptaccess = "sameDomain";
 		params.allowfullscreen = "true";
+		params.wmode = "transparent";
 		params.base = "{{weave_root}}";
 		var attributes = {};
 		attributes.id = "weave";
 		attributes.name = "weave";
 		attributes.align = "middle";
 		swfobject.embedSWF("{{weave_root}}weave.swf", "flashContent",
-			       	"100%", "100%", 
+			       	"100%", window.innerHeight-75, 
 		swfVersionStr, xiSwfUrlStr, 
 		flashvars, params, attributes);
 		swfobject.createCSS("#flashContent", "display:block;text-align:left;");
+
         </script>
     </head>
     <body>
@@ -53,17 +57,20 @@
         
         <noscript>
             <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="100%" height="100%" id="weave">
-                <param name="movie" value="weave.swf" />
+                <param name="movie" value="{{weave_root}}weave.swf" />
                 <param name="quality" value="high" />
                 <param name="bgcolor" value="#7B96B6" />
                 <param name="allowScriptAccess" value="sameDomain" />
-                <param name="allowFullScreen" value="true" />
+		<param name="allowFullScreen" value="true" />
+		<param name="wmode" value="transparent">
                 <!--[if !IE]>-->
-                <object type="application/x-shockwave-flash" data="weave.swf" width="100%" height="100%">
+                <object type="application/x-shockwave-flash" data="{{weave_root}}weave.swf" width="100%" height="100%">
                     <param name="quality" value="high" />
                     <param name="bgcolor" value="#7B96B6" />
                     <param name="allowScriptAccess" value="sameDomain" />
-                    <param name="allowFullScreen" value="true" />
+		    <param name="allowFullScreen" value="true" />
+		   <param name="wmode" value="transparent">
+
                 <!--<![endif]-->
                 <!--[if gte IE 6]>-->
                     <p> 
@@ -78,7 +85,53 @@
                 </object>
                 <!--<![endif]-->
             </object>
-    </noscript> 
+    </noscript>
+    		{% if dh_refered %}
+		<div id="weave-tools">
+			<div id="tools-wrap">
+			<div id="weave-help" class='first'>
+				<h3><a href="#" id="weave-help-btn">Help</a></h3>
+          		<a href="" class="weave-action-icon" title="Getting Started with Weave"><img src="/static/images/icons/icon_weave_help_2.png" alt="Getting Started with Weave"></a>
+			</div>
+			{#% if authenticated %#}
+			 <div id="load-weavefile">
+          			<h3><a href="" class="cboxElement" style="display: inline;">Your WeaveFiles</a></h3>
+          			<a href="" class="weave-action-icon cboxElement" title="" style="display: inline;"><img src="/static/images/icons/white_icon_load_weavefile.png" alt="Load Previously Saved WeaveFiles from your Portfolio"></a>
+			</div>
+			<div id="save-weavefile">
+         			<h3><a href="" class="cboxElement" style="display: inline;">Save WeaveFile</a></h3>
+         			 <a href="" class="weave-action-icon cboxElement" title="Save your work to a WeaveFile in your Portfolio" style="display: inline;"><img src="/static/images/icons/icon_save_weavefile.png" alt="Save your work to a WeaveFile in your Portfolio"></a>
+			 </div>
+			</div>
+			{# %endif% #}
+		</div>
+		{%endif%}
 
-   </body>
+
+	</body>
+	<script type="text/javascript" charset="utf-8">
+		function addEventL(elem, event, callback){
+			if(elem.addEventListener){
+				elem.addEventListener(event, callback, false);
+			}else{
+				elem.attachEvent("on"+ event, callback);
+			}
+
+		}
+		var wh = document.getElementById("weave-help");
+		addEventL(wh, "click", function(event){
+				event.preventDefault();
+				try{
+					window.parent.show_weave_help();
+				}catch(e){
+					return false;
+				}
+		});
+
+		var lw = document.getElementById("load-weavefile");
+		addEventL(lh, "click", function(event){
+				event.preventDefault();
+				
+		});
+	</script>
 </html>
