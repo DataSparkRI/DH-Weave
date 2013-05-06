@@ -15,6 +15,7 @@
 	<link rel="stylesheet" href="{% static 'css/dh-weave.css' %}" type="text/css" media="screen" title="no title" charset="utf-8">
 	{% endif %}
 	<script type="text/javascript" src="{{weave_root}}swfobject.js"></script>
+	<script type="text/javascript" src="{% static 'js/jquery-1.9.1.min.js' %}"></script>
 	<script type="text/javascript" src="{% static 'js/dh-weave.js' %}"></script>
 	<script type="text/javascript">
 		var weaveReady = function(myWeave) {
@@ -110,28 +111,33 @@
 
 	</body>
 	<script type="text/javascript" charset="utf-8">
-		function addEventL(elem, event, callback){
-			if(elem.addEventListener){
-				elem.addEventListener(event, callback, false);
-			}else{
-				elem.attachEvent("on"+ event, callback);
-			}
-
-		}
-		var wh = document.getElementById("weave-help");
-		addEventL(wh, "click", function(event){
-				event.preventDefault();
+		$(function(){
+			$("#weave-help").click(function(e){
+				e.preventDefault();
 				try{
 					window.parent.show_weave_help();
 				}catch(e){
 					return false;
 				}
+
+			});
+			$("#load-weavefile").click(function(event){
+				event.preventDefault();
+				try{
+					window.parent.launchWeaveFile([]);
+				}catch(e){
+					return false;
+				}
+					
+			});
+			window.onhashchange = function(e){
+				//console.log(e);
+				DHWEAVE.updatePageFromHash()
+			}
+
 		});
 
-		var lw = document.getElementById("load-weavefile");
-		addEventL(lh, "click", function(event){
-				event.preventDefault();
-				
-		});
+
+
 	</script>
 </html>

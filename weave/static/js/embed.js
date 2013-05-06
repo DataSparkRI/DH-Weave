@@ -1,6 +1,8 @@
 
 var DHWEAVE = DHWEAVE || {};
+DHWEAVE.container = null;
 extend(DHWEAVE,{
+
 	embed:function(){
 		var ref = window.location.host;
 		var VIZ = "";
@@ -21,8 +23,15 @@ extend(DHWEAVE,{
 		iF.src = "http://127.0.0.1:8000/weave/embed?"+ VIZ + "&ref="  +ref;
 		var targ = document.getElementById(DHW_ID);
 		targ.appendChild(iF);
+		DHWEAVE.container = iF;
+		DHWEAVE.ogURL = iF.src;
 
-	}
+
+	},
+	loadWF:function(wfId){
+		DHWEAVE.container.src = DHWEAVE.ogURL + "#lwf=" + wfId;
+	},
+
 });
 
 /*

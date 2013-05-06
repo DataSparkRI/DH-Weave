@@ -1,4 +1,4 @@
-/*WEAVE JS tools, requires Jquery*/
+/*WEAVE JS tools, requires Jquery, HISTORY.js*/
 var DHWEAVE = DHWEAVE || {};
 
 DHWEAVE.Settings = {
@@ -7,11 +7,18 @@ DHWEAVE.Settings = {
 }
 
 extend(DHWEAVE, {
+	updatePageFromHash:function(){
+		/*a way to communicate back via the iframe*/
+		var h = window.location.hash.replace("#","").split("=");
+		var action = h[0];
+		var param = h[1];
+		//console.log(action, param);	
+	},
 	setWeaveObj:function(weaveObj){
 		var self = this;
 		self.Settings.WObj = weaveObj;
 	},
-
+	
 	getSessionState:function(){
 		var self = this;
 		
@@ -46,7 +53,7 @@ extend(DHWEAVE, {
 
 	},
 
-	fetchClientConfig:function(slug, callback){
+	fetchClientConfig:function(id, callback){
 		var self = this;
 	},
 
@@ -76,3 +83,33 @@ function extend(destination, source) {
     }
     return destination;
 };
+
+window.onload = function(){
+ 
+  // exit if the browser implements that event
+  if ( window.document.body.hasOwnProperty('onhashchange') ) { return; }
+ 
+  var location = window.location,
+    oldURL = location.href,
+    oldHash = location.hash;
+ 
+  // check the location hash on a 100ms interval
+  setInterval(function() {
+    var newURL = location.href,
+      newHash = location.hash;
+ 
+    // if the hash has changed and a handler has been bound...
+    if ( newHash != oldHash && typeof window.onhashchange === "function" ) {
+      // execute the handler
+      window.onhashchange({
+        type: "hashchange",
+        oldURL: oldURL,
+        newURL: newURL
+      });
+ 
+      oldURL = newURL;
+      oldHash = newHash;
+    }
+  }, 100);
+ 
+}

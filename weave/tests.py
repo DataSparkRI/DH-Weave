@@ -53,24 +53,40 @@ class APITest(TestCase):
 
         self.assertEqual(get_custom_hierarchy_as_xml('TestCat', items), expected)
 
+class ClientConfigTest(TestCase):
+    urls = 'weave.urls'
+
+    def setUp(self):
+        self.test_user = User.objects.create_user('tuser', 'temporary@gmail.com', 'tuser')
+        self.test_user2 = User.objects.create_user('tuser2', 'temporar2y@gmail.com', 'tuser2')
+
+    def test_relationships(self):
+        # create some fake configs
+        json_conf = ClientConfiguration(content_object=self.test_user, name="jsonconf", slug="jsonconf", content_format="json", is_public=True)
+        json_conf.content = json.dumps({'a':'Hello World'})
+        json_conf.save()
+
+        print json_conf.content_object, json_conf.name, json_conf.object_id
+
+
 class ViewsTest(TestCase):
     urls = 'weave.urls'
 
     def setUp(self):
-       self.test_user = User.objects.create_user('tuser', 'temporary@gmail.com', 'tuser')
-       self.test_user2 = User.objects.create_user('tuser2', 'temporar2y@gmail.com', 'tuser2')
-       # create some fake configs
-       json_conf = ClientConfiguration(user=self.test_user, name="jsonconf", slug="jsonconf", content_format="json", is_public=True)
-       json_conf.content = json.dumps({'a':'Hello World'})
-       json_conf.save()
+        self.test_user = User.objects.create_user('tuser', 'temporary@gmail.com', 'tuser')
+        self.test_user2 = User.objects.create_user('tuser2', 'temporar2y@gmail.com', 'tuser2')
+        # create some fake configs
+        json_conf = ClientConfiguration(content_object=self.test_user, name="jsonconf", slug="jsonconf", content_format="json", is_public=True)
+        json_conf.content = json.dumps({'a':'Hello World'})
+        json_conf.save()
 
-       xml_conf = ClientConfiguration(user=self.test_user2, name="xmlconf", slug="xmlconf", content_format="xml")
-       xml_conf.content ='''
+        xml_conf = ClientConfiguration(content_object=self.test_user2, name="xmlconf", slug="xmlconf", content_format="xml")
+        xml_conf.content ='''
         <Weave>
             <thing></thing>
         </Weave>
-       '''
-       xml_conf.save()
+        '''
+        xml_conf.save()
 
     def test_cc_get_client_config(self):
         client = Client()
@@ -138,7 +154,6 @@ class ViewsTest(TestCase):
 
         self.assertEqual('xml', ClientConfiguration.objects.get(slug='new-xml').content_format)
         self.assertEqual('json', ClientConfiguration.objects.get(slug='new-json').content_format)
-
 
 
 

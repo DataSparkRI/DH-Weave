@@ -97,6 +97,8 @@ class ClientConfiguration(models.Model):
         ('xml', 'xml'),
         ('file', 'file')
     )
+    content_type = models.ForeignKey(ContentType, null=True)
+    object_id = models.PositiveIntegerField(null=True) # this has nothing to do with Weave's object_id
     content_object = generic.GenericForeignKey('content_type', 'object_id') # Generic relationship to lots of different models.
     name = models.CharField(max_length=100)
     slug = models.SlugField(unique=True, db_index=True, blank=True)
