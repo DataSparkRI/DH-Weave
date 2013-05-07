@@ -1,18 +1,25 @@
-/*WEAVE JS tools, requires Jquery, HISTORY.js*/
+/*WEAVE JS tools, requires Jquery*/
 var DHWEAVE = DHWEAVE || {};
 
 DHWEAVE.Settings = {
-	baseUrl:'http:127.0.0.1:8000',
+	baseUrl:'',
 	WObj:null,
 }
 
 extend(DHWEAVE, {
 	updatePageFromHash:function(){
 		/*a way to communicate back via the iframe*/
+		var self = this;
 		var h = window.location.hash.replace("#","").split("=");
 		var action = h[0];
 		var param = h[1];
-		//console.log(action, param);	
+		if(action==="lwf"){
+			//load the weave file by the id
+			self.fetchClientConfig(param, function(data){
+				console.log(data);
+				self.Settings.WObj.path().diff(data);	
+			});
+		}	
 	},
 	setWeaveObj:function(weaveObj){
 		var self = this;
@@ -55,6 +62,7 @@ extend(DHWEAVE, {
 
 	fetchClientConfig:function(id, callback){
 		var self = this;
+		$.getJSON(self.Settings.baseUrl + 'weave/cc/' + id, callback)
 	},
 
 	saveClientConfig:function(name, callback){

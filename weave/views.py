@@ -4,6 +4,7 @@ from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.contrib.contenttypes.models import ContentType
 
 from weave.models import ClientConfiguration
 from weave.util import deprecated
@@ -29,15 +30,15 @@ def get_user_configs(request):
 
 
 
-def get_client_config(request, config_slug):
+def get_client_config(request, config_id):
     """ Return client configs storede in the database """
     try:
         # find the client config by slug, if its public continue else, check
         # for to see if the user is the right one
-        config = ClientConfiguration.objects.defer('content').get(slug=config_slug)
+        config = ClientConfiguration.objects.defer('content').get(id=config_id)
 
         if not config.is_public:
-            config = get_object_or_404(ClientConfiguration, slug=config_slug, user=request.user)
+            config = get_object_or_404(ClientConfiguration, id=config_id, userprofile=request.user.userprofile)
 
         if config.content_format == 'xml':
             return HttpResponse(config.content, mimetype="application/xml")
@@ -94,7 +95,7 @@ def embed_weave(request):
         Also we check to see where the referer is coming from. If its from datahub then we want to display some extra ui, if not we can display links to datahub.
     """
     ctx = {}
-    ctx['authenicated'] = request.user.is_authenticated()
+    ctx['authenticated'] = request.user.is_authenticated()
     viz = request.GET.get('viz', None)
     #weave_config = request.GET.get('wf', "default.xml") # what is default?
     #c_config = request.GET.get('cc', None)
@@ -106,6 +107,7 @@ def embed_weave(request):
 
     ctx['weave_root'] = getattr(settings,'WEAVE_ROOT', "http://127.0.0.1:8081/") # SETTING
     ctx['dh_refered'] = dh_refered
+    ctx['host'] = request.get_host()
 
     return render_to_response('weave.html', ctx, context_instance=RequestContext(request))
 

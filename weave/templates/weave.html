@@ -20,6 +20,7 @@
 	<script type="text/javascript">
 		var weaveReady = function(myWeave) {
 			DHWEAVE.setWeaveObj(myWeave);
+			DHWEAVE.Settings.baseUrl = "http://{{host}}/";
 		}
 		var swfVersionStr = "10.2.0";
 		var xiSwfUrlStr = "{{weave_root}}playerProductInstall.swf";
@@ -124,12 +125,13 @@
 			$("#load-weavefile").click(function(event){
 				event.preventDefault();
 				try{
-					window.parent.launchWeaveFile([]);
+					window.parent.launchWeaveFile();
 				}catch(e){
 					return false;
 				}
 					
 			});
+
 			window.onhashchange = function(e){
 				//console.log(e);
 				DHWEAVE.updatePageFromHash()
