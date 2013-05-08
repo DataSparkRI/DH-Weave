@@ -106,7 +106,7 @@ class ClientConfiguration(models.Model):
     # name of the file, relative to Tomcat's/weave's docroot. This will be passed on as
     # as a url to the weave client
     content_file = models.CharField(max_length=100, unique=True, null=True, blank=True)
-    content_format = models.CharField(max_length=4, choices=FORMAT_CHOICES, default='file')
+    content_format = models.CharField(max_length=4, choices=FORMAT_CHOICES, default='file', null=True)
     is_public = models.NullBooleanField(default=False, null=True, blank=True)
 
     def cc_type(self):

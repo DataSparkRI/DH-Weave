@@ -3,21 +3,50 @@ var DHWEAVE = DHWEAVE || {};
 
 DHWEAVE.Settings = {
 	baseUrl:'',
-	WObj:null,
+	WObj:null
+
 }
 
 extend(DHWEAVE, {
+	getWeaveStateKeys:function(){
+		/*return a list of default weave session state items
+		 * TODO: SHould this use path().getNames()?
+		 * */
+		var self = this;
+		var ssKeys = [];
+		var state = self.Settings.WObj.path().getState()
+		for(var i in state){
+			ssKeys.push(state[i].className)
+		}
+		return ssKeys;
+	},
 	updatePageFromHash:function(){
 		/*a way to communicate back via the iframe*/
 		var self = this;
 		var h = window.location.hash.replace("#","").split("=");
 		var action = h[0];
 		var param = h[1];
+		var validKeys = self.getWeaveStateKeys();
 		if(action==="lwf"){
 			//load the weave file by the id
 			self.fetchClientConfig(param, function(data){
-				console.log(data);
-				self.Settings.WObj.path().diff(data);	
+				var cleaned_data =[]; // We need to clean up old client configurations data sources.
+				var match;
+				for(var i=0 in data){
+					match = 0;
+				
+					for(var k in validKeys){
+						if(data[i].className===validKeys[k]){
+							//cleaned_data.push(data[i]);
+							//this keeps us from overwriting existing data sources if the stored client config is old.
+							match ++;
+						}
+					}
+					if(match==0){
+						cleaned_data.push(data[i]);
+					}
+				}
+				self.Settings.WObj.path().diff(cleaned_data);	
 			});
 		}	
 	},
