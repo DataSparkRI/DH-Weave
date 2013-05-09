@@ -4,12 +4,14 @@ from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_http_methods
 from django.contrib.contenttypes.models import ContentType
 
 from weave.models import ClientConfiguration
 from weave.util import deprecated
 import simplejson as json
 import elementtree.ElementTree as ET
+from django.views.decorators.csrf import csrf_exempt, csrf_protect
 
 @deprecated
 def client_config(request, config_slug):
@@ -48,25 +50,31 @@ def get_client_config(request, config_id):
     except ClientConfiguration.DoesNotExist:
         raise Http404
 
-
+@csrf_exempt
+@require_http_methods(["POST"])
 @login_required
-def save_client_config(request, config_slug):
+def save_client_config(request):
     from random import randrange
     """ Save a client config from a POST request
         We can ovewrite or create a new one. Name defaults to Unititled + random junk
+        TODO: This requires Client Configurations to be attached to a userprofile. Its too tightly coupled to Datahub.
     """
     cc_name = request.POST.get('cc_name', 'Untitled_%010x' % randrange(256**15))
     data = request.POST.get('cc_data', None)
+    action = 'fail'
 
     try:
-        config = ClientConfiguration.objects.get(user=request.user, slug=config_slug)
+        config = request.user.userprofile.client_configs.get(name=cc_name)
+        action = 'update'
 
     except ClientConfiguration.DoesNotExist:
-        # create a new one
-        config = ClientConfiguration(user=request.user, name=cc_name)
+        #create a new one
+        config = ClientConfiguration(content_object=request.user.userprofile, name=cc_name)
+        action = 'create'
 
     # because we are gonna be transitioning everyones client configs to JSON,
     # we need to do some validation here
+
     if data:
         try:
             json.loads(data)
@@ -74,7 +82,7 @@ def save_client_config(request, config_slug):
             config.content=data
             config.content_format = 'json'
             config.save()
-            result = {'status':'success-json','cc-slug':config.slug}
+            result = {'status':'success-json','cc-slug':config.slug, 'action':action}
         except json.JSONDecodeError:
             # try some basic xml validation
             try:
@@ -82,7 +90,7 @@ def save_client_config(request, config_slug):
                 config.content=data
                 config.content_format = 'xml'
                 config.save()
-                result = {'status':'success-xml', 'cc-slug':config.slug}
+                result = {'status':'success-xml', 'cc-slug':config.slug, 'action':action}
             except Error:
                 result = {'status':'error'}
 

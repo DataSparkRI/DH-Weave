@@ -31,6 +31,9 @@ extend(DHWEAVE,{
 	loadWF:function(wfId){
 		DHWEAVE.container.src = DHWEAVE.ogURL + "#lwf=" + wfId;
 	},
+	saveWF:function(wfName){
+		DHWEAVE.container.src = DHWEAVE.ogURL + "#swf=" + wfName;
+	}
 
 });
 

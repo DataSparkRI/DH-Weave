@@ -26,7 +26,8 @@ extend(DHWEAVE, {
 		var h = window.location.hash.replace("#","").split("=");
 		var action = h[0];
 		var param = h[1];
-		var validKeys = self.getWeaveStateKeys();
+		//var validKeys = self.getWeaveStateKeys();
+		var validKeys = ['weave.data.DataSources::WeaveDataSource']; // This is a list of weave session state objects we dont want to let the saved session state overwrite.
 		if(action==="lwf"){
 			//load the weave file by the id
 			self.fetchClientConfig(param, function(data){
@@ -46,20 +47,47 @@ extend(DHWEAVE, {
 						cleaned_data.push(data[i]);
 					}
 				}
+				self.clearTools()
 				self.Settings.WObj.path().diff(cleaned_data);	
 			});
+		}else if(action ==="swf"){
+			self.saveClientConfig(param, function(data){
+				if(data.status =="success-json"){
+					if(data.action == 'create'){
+						self.showMessage("Your Weave File has been saved");
+					}else{
+						self.showMessage("Your Weave File has been updated");
+					}
+				}
+			});
 		}	
+	},
+	getToolsNames:function(){
+		/* get a list of the tools in the weave sessions*/
+		var self = this;
+		var currState = self.Settings.WObj.path().getNames();
+		var tools = [];
+		for(var i in currState){
+			if(currState[i].indexOf("Tool") != -1){
+				tools.push(currState[i]);
+			}
+		}
+		return tools;
+	},
+	clearTools:function(){
+		/*Remove all tools in weave session*/
+		var self = this;
+		var tools = self.getToolsNames();
+		var path = self.Settings.WObj.path();
+		for(var i in tools){
+			path.remove(tools[i]);
+		}
 	},
 	setWeaveObj:function(weaveObj){
 		var self = this;
 		self.Settings.WObj = weaveObj;
 	},
 	
-	getSessionState:function(){
-		var self = this;
-		
-	},
-
 	getSessionDataSources:function(){
 		var self = this;
 		// iterate the session state objects and return the DataSources member attribute column
@@ -91,17 +119,48 @@ extend(DHWEAVE, {
 
 	fetchClientConfig:function(id, callback){
 		var self = this;
-		$.getJSON(self.Settings.baseUrl + 'weave/cc/' + id, callback)
+		$.getJSON(self.Settings.baseUrl + 'weave/cc/' + id, callback);
 	},
 
 	saveClientConfig:function(name, callback){
 		var self = this;
+		$.post(self.Settings.baseUrl + 'weave/cc-save/',
+			       	{ 
+					cc_data:JSON.stringify(self.Settings.WObj.path().getState()),
+					cc_name: name
+				}, 
+				"json"
+		).done(function(data){
+			if(typeof(callback)!=='undefined'){
+				callback(data);
+			}
+		});
+
 	},
 
 	getUserConfigs:function(callback){
 		var self = this;
 			
-	},	
+	},
+
+	showMessage:function(mssg){
+		var self = this;
+		var mbox = document.createElement('div');
+		mbox.innerHTML = mssg;
+		mbox.className="weave-mbox";
+		$(mbox).css({
+			'position':'absolute',
+			'top': ($(window).height()/2 - 100) + "px",
+			'left': ($(window).width()/2 -100) + "px"
+			
+		})
+
+		$("body").append(mbox);
+		$(mbox).delay(3000).fadeOut('slow', function(){
+			$(mbox).remove();	
+		});
+
+	}
 		
 });
 

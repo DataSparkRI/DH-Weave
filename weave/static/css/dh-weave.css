@@ -51,8 +51,17 @@ input, textarea, select, option {
 #weave-tools div {text-align:center;
 	display:inline-block;
 	margin-left:200px;
+	position:relative;
 }
 
 #weave-tools div.first{margin:0px;}
 
 #weave-tools h3{margin:0px;font-weight:normal}
+
+.weave-mbox {
+	padding:5px;
+	background-color: #a44499;
+	color:#fff;
+	width:200px;
+	z-index:9999;
+}
