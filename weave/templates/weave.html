@@ -5,10 +5,22 @@
         <title>weave</title>
         <style type="text/css" media="screen"> 
             	html, body  { height:100%; }
-           	body { margin:0; padding:0; overflow:auto; text-align:center; 
-                   background-color: #7B96B6; }   
+		body { 
+			margin:0; 
+			padding:0; 
+			overflow:auto; 
+			text-align:center; 
+			background-color: #7B96B6; 
+			{%if height%} height: {{height}}px{%endif%};
+			{%if width%} width: {{width}}px{%endif%};
+		}   
+		
             	object:focus { outline:none;}
 		#flashContent { display:none;}
+		h1.title{
+			background:#efefef;
+			width:100%;
+		}
         </style>
         
     	{% if dh_refered %}
@@ -36,8 +48,13 @@
 		attributes.id = "weave";
 		attributes.name = "weave";
 		attributes.align = "middle";
+		{%if editable and dh_refered%}
 		swfobject.embedSWF("{{weave_root}}weave.swf", "flashContent",
-			       	"100%", window.innerHeight-75, 
+				"100%", window.innerHeight-75, 
+		{%else%}
+		swfobject.embedSWF("{{weave_root}}weave.swf", "flashContent",
+				"100%", "100%", 
+		{%endif%}
 		swfVersionStr, xiSwfUrlStr, 
 		flashvars, params, attributes);
 		swfobject.createCSS("#flashContent", "display:block;text-align:left;");
@@ -45,6 +62,9 @@
         </script>
     </head>
     <body>
+	{%if ttl%}
+		<h1 class="title">{{ttl}}</h1>
+	{%endif%}
         <div id="flashContent">
             <p>
                 To view this page ensure that Adobe Flash Player version 
@@ -88,7 +108,7 @@
                 <!--<![endif]-->
             </object>
     </noscript>
-    		{% if dh_refered %}
+    		{% if dh_refered and editable %}
 		<div id="weave-tools">
 			<div id="tools-wrap">
 			<div id="weave-help" class='first'>

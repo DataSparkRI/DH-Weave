@@ -105,6 +105,14 @@ def embed_weave(request):
     ctx = {}
     ctx['authenticated'] = request.user.is_authenticated()
     viz = request.GET.get('viz', None)
+    title = request.GET.get('ttl', None)
+    width = request.GET.get('w', None)
+    height = request.GET.get('h', None)
+    editable = request.GET.get('e', "false") # If the user is logged in should we display controls?
+    if editable == "true":
+        editable = True
+    else:
+        editable = False
     #weave_config = request.GET.get('wf', "default.xml") # what is default?
     #c_config = request.GET.get('cc', None)
     referer = request.GET.get('ref', None)
@@ -115,7 +123,11 @@ def embed_weave(request):
 
     ctx['weave_root'] = getattr(settings,'WEAVE_ROOT', "http://127.0.0.1:8081/") # SETTING
     ctx['dh_refered'] = dh_refered
+    ctx['height'] = height
+    ctx['width'] = width
+    ctx['ttl'] = title
     ctx['host'] = request.get_host()
+    ctx['editable'] = editable
 
     return render_to_response('weave.html', ctx, context_instance=RequestContext(request))
 

@@ -128,7 +128,7 @@ class ClientConfiguration(models.Model):
         """ The url or path that should be passed to the Weave client to load this config """
         if self.content_format not in ('file', ):
             raise NotImplemented('Only file-based configs may be saved at this time')
-        return "/weave_docroot/%s" % self.content_file
+        return "%s" % self.content_file
 
     def __unicode__(self):
         return "%s" % self.name

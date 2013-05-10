@@ -1,5 +1,6 @@
 <script type="text/javascript" charset="utf-8">
-	var DHW_ID ='weave-container';
-	var DHW_VIZ = 'default.xml';
+	var DHW_ID ='{{ weave_container|default:'weave-container'}}';
+	var DHW_VIZ = '{{ weave_file|default:'default.xml' }}';
+	var DHW_EDITABLE = '{{ weave_is_editable|default:'true'}}';
 </script>
 <script src="{{STATIC_URL}}js/embed.js"></script>
