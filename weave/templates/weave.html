@@ -95,7 +95,7 @@
 				<h3><a href="#" id="weave-help-btn">Help</a></h3>
           		<a href="" class="weave-action-icon" title="Getting Started with Weave"><img src="/static/images/icons/icon_weave_help_2.png" alt="Getting Started with Weave"></a>
 			</div>
-			{#% if authenticated %#}
+			{% if authenticated %}
 			 <div id="load-weavefile">
           			<h3><a href="" class="cboxElement" style="display: inline;">Your WeaveFiles</a></h3>
           			<a href="" class="weave-action-icon cboxElement" title="" style="display: inline;"><img src="/static/images/icons/white_icon_load_weavefile.png" alt="Load Previously Saved WeaveFiles from your Portfolio"></a>
@@ -105,7 +105,7 @@
          			 <a href="" class="weave-action-icon cboxElement" title="Save your work to a WeaveFile in your Portfolio" style="display: inline;"><img src="/static/images/icons/icon_save_weavefile.png" alt="Save your work to a WeaveFile in your Portfolio"></a>
 			 </div>
 			</div>
-			{# %endif% #}
+			{%endif%}
 		</div>
 		{%endif%}
 
@@ -113,6 +113,7 @@
 	</body>
 	<script type="text/javascript" charset="utf-8">
 		$(function(){
+			$.ajaxSetup({ cache: false });
 			$("#weave-help").click(function(e){
 				e.preventDefault();
 				try{
@@ -126,6 +127,15 @@
 				event.preventDefault();
 				try{
 					window.parent.launchWeaveFile();
+				}catch(e){
+					return false;
+				}
+					
+			});
+			$("#save-weavefile").click(function(event){
+				event.preventDefault();
+				try{
+					window.parent.saveWeaveFile();
 				}catch(e){
 					return false;
 				}
