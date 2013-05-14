@@ -101,15 +101,33 @@ extend(DHWEAVE, {
 		}
 		return state;
 	},
-	updateSessionDataSources:function(label, data){
+	updateSessionDataSources:function(hierarchy_label, category_label, data){
+		/*Add session data source to the existing one
+		 * label is the Hierchy label as see in the data sources
+		 * data is the attribute columns formated as an array of dicts
+		 * that ends up formated like this <attribute weaveEntityId="230" name="% Chronically Absent [18 days+] - Grades 6-8 (30 day min)" year="SY05-06" object_id="3508" dataTable="District" dataType="number" title="% Chronically Absent [18 days+] - Grades 6-8 (30 day min), SY05-06"/>
+		 * */
 		var self = this;
-		var newState = {
-			attributeHierarchy : '<hierarchy name="User Items"><category title="Nested"></category></hierarchy>'	
+		var output = '<hierarchy> <category title="'+category_label+'">';
+		for(var i in data){
+			output += "<attribute";
+				for(var prop in data[i]){
+					output +=' ' + prop + '="' + data[i][prop] + '"';
+				}
+			output+= "/>";
+			
 		}
-		self.Settings.WObj.path()
-		.push(label)
-		.request('WeaveDataSource')
-		.state(newState);
+		output+="</category></hierarchy>";
+		var newState = {
+			attributeHierarchy : output	
+		}
+		var new_hierarchy = self.Settings.WObj.path().push(hierarchy_label).request('WeaveDataSource');
+		if(new_hierarchy.getState().attributeHierarchy == null ){
+
+			
+		}
+
+		new_hierarchy.state(newState);
 	},
 
 	loadSessionState:function(){

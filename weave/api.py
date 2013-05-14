@@ -116,7 +116,7 @@ def clear_generated_meta():
         h.delete()
 
 def get_hierarchy_as_xml():
-    """ Return weave data heirchy as xml categories """
+    """ Return weave data heirchy as xml categories. THIS IS NOT USED TODO:clean up test that include this"""
     out = u' '
     parent_ids = WeaveHierarchy.objects.all().distinct('parent_id')
 
@@ -130,6 +130,14 @@ def get_hierarchy_as_xml():
         #out += xml.render()
     return out
 
+def get_weave_item_as_dict(entity_id):
+    """ Return a dict of related weave entity items """
+    attribute = {}
+    items = WeaveMetaPublic.objects.filter(entity_id=entity_id).distinct('meta_name')
+    attribute['weaveEntityId'] = entity_id
+    for item in items:
+        attribute[item.meta_name] = item.meta_value
+    return attribute
 
 def get_hierarchy_items(parent_id):
     for h_obj in WeaveHierarchy.objects.filter(parent_id=parent_id):
@@ -149,7 +157,7 @@ def get_hierarchy_items(parent_id):
         yield y_kwargs
 
 def get_custom_hierarchy_as_xml(title, hierarchy_list_items):
-    """ Generate a custom hierarchy bases on the the h_list_items
+    """ Generate a custom hierarchy based on the the h_list_items
         the h_list_items should be a list of dicts that follow this ex:
         [{
             'title':'My thing',

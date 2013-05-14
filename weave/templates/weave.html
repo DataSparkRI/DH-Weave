@@ -33,7 +33,18 @@
 		var weaveReady = function(myWeave) {
 			DHWEAVE.setWeaveObj(myWeave);
 			DHWEAVE.Settings.baseUrl = "http://{{host}}/";
+			{% if dh_refered and editable %}{# TODO: hardcoded accounts url :( #}
+			$.getJSON("/accounts/ilist/list/", function(data){
+				if(data.hasOwnProperty('user_ilists')){
+					for(var prop in data['user_ilists']){
+						DHWEAVE.updateSessionDataSources('Your Ilists', prop, data['user_ilists'][prop]);
+					}
+				}
+					
+			});
+			{% endif %}
 		}
+
 		var swfVersionStr = "10.2.0";
 		var xiSwfUrlStr = "{{weave_root}}playerProductInstall.swf";
 		var flashvars = {};
@@ -166,6 +177,7 @@
 				//console.log(e);
 				DHWEAVE.updatePageFromHash()
 			}
+
 
 		});
 
