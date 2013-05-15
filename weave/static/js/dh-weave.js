@@ -94,6 +94,7 @@ extend(DHWEAVE, {
 		var stateList = self.Settings.WObj.path().getState();
 		var state;
 		for(var i in stateList){	
+eave.html
 			state = stateList[i];
 			if(state.objectName === "WeaveDataSource"){
 				break;
@@ -105,29 +106,36 @@ extend(DHWEAVE, {
 		/*Add session data source to the existing one
 		 * label is the Hierchy label as see in the data sources
 		 * data is the attribute columns formated as an array of dicts
+eave.html
 		 * that ends up formated like this <attribute weaveEntityId="230" name="% Chronically Absent [18 days+] - Grades 6-8 (30 day min)" year="SY05-06" object_id="3508" dataTable="District" dataType="number" title="% Chronically Absent [18 days+] - Grades 6-8 (30 day min), SY05-06"/>
+		 * Then we need to munge it with existing dataset
 		 * */
 		var self = this;
-		var output = '<hierarchy> <category title="'+category_label+'">';
-		for(var i in data){
-			output += "<attribute";
-				for(var prop in data[i]){
-					output +=' ' + prop + '="' + data[i][prop] + '"';
-				}
-			output+= "/>";
-			
-		}
-		output+="</category></hierarchy>";
-		var newState = {
-			attributeHierarchy : output	
-		}
+		var output;
+		var dataStr = '<category title="'+category_label+'">';
 		var new_hierarchy = self.Settings.WObj.path().push(hierarchy_label).request('WeaveDataSource');
-		if(new_hierarchy.getState().attributeHierarchy == null ){
-
+		for(var i in data){
+			dataStr += "<attribute";
+				for(var prop in data[i]){
+					dataStr +=' ' + prop + '="' + data[i][prop] + '"';
+				}
+			dataStr+= "/>";
 			
 		}
+		dataStr +="</category>"
 
+		if(new_hierarchy.getState().attributeHierarchy === null ){
+			output = "<hierarchy>%s</hierarchy>";
+			output = output.replace("%s", dataStr);
+		}else{
+			output = new_hierarchy.getState().attributeHierarchy.replace("</hierarchy>", "%s");
+			output = output.replace("%s", dataStr + "\n </hierarchy>");
+		}
+		var newState = {
+			attributeHierarchy : output
+		}
 		new_hierarchy.state(newState);
+
 	},
 
 	loadSessionState:function(){
