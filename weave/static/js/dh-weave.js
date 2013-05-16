@@ -102,35 +102,41 @@ eave.html
 		}
 		return state;
 	},
-	updateSessionDataSources:function(hierarchy_label, category_label, data){
-		/*Add session data source to the existing one
-		 * label is the Hierchy label as see in the data sources
-		 * data is the attribute columns formated as an array of dicts
-eave.html
-		 * that ends up formated like this <attribute weaveEntityId="230" name="% Chronically Absent [18 days+] - Grades 6-8 (30 day min)" year="SY05-06" object_id="3508" dataTable="District" dataType="number" title="% Chronically Absent [18 days+] - Grades 6-8 (30 day min), SY05-06"/>
-		 * Then we need to munge it with existing dataset
-		 * */
+
+	
+	updateSessionDataSources:function(category_label, data){
+		/*Update the Weave Datasources from well formated json*/
 		var self = this;
 		var output;
-		var dataStr = '<category title="'+category_label+'">';
-		var new_hierarchy = self.Settings.WObj.path().push(hierarchy_label).request('WeaveDataSource');
-		for(var i in data){
-			dataStr += "<attribute";
-				for(var prop in data[i]){
-					dataStr +=' ' + prop + '="' + data[i][prop] + '"';
+		output = "<hierarchy>%s</hierarchy>";
+		var dataStr = "";	
+		var new_hierarchy = self.Settings.WObj.path().push(category_label).request('WeaveDataSource');
+		var currObj;
+		for(var prop in data){
+			dataStr += '<category title="'+prop+'">';
+			// now we have to create he nested categories
+			currObj = data[prop];
+			for(var prop in currObj){
+				dataStr += '<category title="'+prop+'">'; // this is the dataTable level
+				for(var attr in currObj[prop]){
+					var obj = currObj[prop][attr];
+					
+					dataStr += "<attribute";
+					for(var i in obj){
+						dataStr +=' ' + i + '="' + obj[i] + '"';
+					}
+					dataStr += "/>";
+				
 				}
-			dataStr+= "/>";
+				dataStr +="</category>"
+			}
+
+			dataStr +="</category>"
+
 			
 		}
-		dataStr +="</category>"
-
-		if(new_hierarchy.getState().attributeHierarchy === null ){
-			output = "<hierarchy>%s</hierarchy>";
-			output = output.replace("%s", dataStr);
-		}else{
-			output = new_hierarchy.getState().attributeHierarchy.replace("</hierarchy>", "%s");
-			output = output.replace("%s", dataStr + "\n </hierarchy>");
-		}
+		
+		output = output.replace("%s", dataStr);
 		var newState = {
 			attributeHierarchy : output
 		}
