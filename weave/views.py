@@ -6,6 +6,7 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.auth.models import AnonymousUser
 
 from weave.models import ClientConfiguration
 from weave.util import deprecated
@@ -18,7 +19,7 @@ def client_config(request, config_slug):
     config = get_object_or_404(ClientConfiguration, slug=config_slug)
     return HttpResponse(config.get_xml(), mimetype="application/xml")
 
-
+@deprecated
 def get_user_configs(request):
     # get a list of user configurations
     results = {}
@@ -35,13 +36,16 @@ def get_user_configs(request):
 def get_client_config(request, config_id):
     """ Return client configs storede in the database """
     try:
-        # find the client config by slug, if its public continue else, check
+        # find the client config by id, if its public continue else, check
         # for to see if the user is the right one
         config = ClientConfiguration.objects.defer('content').get(id=config_id)
 
-        if not config.is_public:
-            config = get_object_or_404(ClientConfiguration, id=config_id, userprofile=request.user.userprofile)
-
+        if not config.is_public: # this config is not public so only the creator can see it.
+            if request.user.is_authenticated():
+                config = get_object_or_404(ClientConfiguration, id=config_id, userprofile=request.user.userprofile)
+            else:
+                raise Http404
+        # if the config is public, we just finish the request
         if config.content_format == 'xml':
             return HttpResponse(config.content, mimetype="application/xml")
         elif config.content_format == 'json':
@@ -113,9 +117,10 @@ def embed_weave(request):
         editable = True
     else:
         editable = False
-    #weave_config = request.GET.get('wf', "default.xml") # what is default?
-    #c_config = request.GET.get('cc', None)
+
+    c_config = request.GET.get('cc', None)
     referer = request.GET.get('ref', None)
+
     if referer == settings.DATAHUB_HOST:
         dh_refered = True
     else:
@@ -128,6 +133,9 @@ def embed_weave(request):
     ctx['ttl'] = title
     ctx['host'] = request.get_host()
     ctx['editable'] = editable
+
+    if c_config is not None:
+        ctx['client_config'] = c_config
 
     return render_to_response('weave.html', ctx, context_instance=RequestContext(request))
 

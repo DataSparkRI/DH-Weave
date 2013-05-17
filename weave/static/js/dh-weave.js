@@ -27,29 +27,9 @@ extend(DHWEAVE, {
 		var action = h[0];
 		var param = h[1];
 		//var validKeys = self.getWeaveStateKeys();
-		var validKeys = ['weave.data.DataSources::WeaveDataSource']; // This is a list of weave session state objects we dont want to let the saved session state overwrite.
 		if(action==="lwf"){
 			//load the weave file by the id
-			self.fetchClientConfig(param, function(data){
-				var cleaned_data =[]; // We need to clean up old client configurations data sources.
-				var match;
-				for(var i=0 in data){
-					match = 0;
-				
-					for(var k in validKeys){
-						if(data[i].className===validKeys[k]){
-							//cleaned_data.push(data[i]);
-							//this keeps us from overwriting existing data sources if the stored client config is old.
-							match ++;
-						}
-					}
-					if(match==0){
-						cleaned_data.push(data[i]);
-					}
-				}
-				self.clearTools()
-				self.Settings.WObj.path().diff(cleaned_data);	
-			});
+			self.loadClientConfig(param);
 		}else if(action ==="swf"){
 			self.saveClientConfig(param, function(data){
 				if(data.status =="success-json"){
@@ -61,6 +41,31 @@ extend(DHWEAVE, {
 				}
 			});
 		}	
+	},
+	loadClientConfig:function(id){
+		var self = this;
+		var validKeys = ['weave.data.DataSources::WeaveDataSource']; // This is a list of weave session state objects we dont want to let the saved session state overwrite.
+		//load the weave file by the id
+		self.fetchClientConfig(id, function(data){
+			var cleaned_data =[]; // We need to clean up old client configurations data sources.
+			var match;
+			for(var i=0 in data){
+				match = 0;
+			
+				for(var k in validKeys){
+					if(data[i].className===validKeys[k]){
+						//cleaned_data.push(data[i]);
+						//this keeps us from overwriting existing data sources if the stored client config is old.
+						match ++;
+					}
+				}
+				if(match==0){
+					cleaned_data.push(data[i]);
+				}
+			}
+			self.clearTools()
+			self.Settings.WObj.path().diff(cleaned_data);	
+		});
 	},
 	getToolsNames:function(){
 		/* get a list of the tools in the weave sessions*/

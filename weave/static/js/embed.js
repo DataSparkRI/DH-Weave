@@ -14,7 +14,7 @@ extend(DHWEAVE, {
 		if(DHW_VIZ.indexOf(".xml") !== -1  || DHW_VIZ.indexOf(".weave") !== -1) {
 			VIZ = "file=" + DHW_VIZ;
 		}else{
-			VIZ = "cc=" + DHW_VIZ;
+			VIZ = "file=default.xml&cc=" + DHW_VIZ;
 		}
 
 		var iF = document.createElement('iframe');
