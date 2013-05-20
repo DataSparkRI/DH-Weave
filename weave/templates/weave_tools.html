@@ -1,4 +1,5 @@
 <script type="text/javascript" charset="utf-8">
+	var DHW_HOST ='{{ weave_host|default:'127.0.0.1:8000'}}';
 	var DHW_ID ='{{ weave_container|default:'weave-container'}}';
 	var DHW_VIZ = '{{ weave_file|default:'default.xml' }}';
 	var DHW_EDITABLE = '{{ weave_is_editable|default:'true'}}';

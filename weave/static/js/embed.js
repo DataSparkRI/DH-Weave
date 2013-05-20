@@ -7,8 +7,9 @@ extend(DHWEAVE, {
 		var ref = window.location.host;
 		var VIZ = "";
 		// check to see if required vars exist
+		if(typeof DHW_HOST === "undefined") throw new Error("DHW_HOST needs to be defined");
 		if(typeof DHW_ID === "undefined") throw new Error("DHW_ID needs to be defined");
-		if(typeof DHW_VIZ === "undefined") throw new Error("DHW_ID needs to be defined");
+		if(typeof DHW_VIZ === "undefined") throw new Error("DHW_VIZ needs to be defined");
 		if(typeof DHW_EDITABLE ==="undefined") DHW_EDITABLE = "false";
 
 		if(DHW_VIZ.indexOf(".xml") !== -1  || DHW_VIZ.indexOf(".weave") !== -1) {
@@ -21,7 +22,7 @@ extend(DHWEAVE, {
 		iF.height = "100%";
 		iF.width = "100%";
 		iF.scrolling="no";
-		iF.src = "http://127.0.0.1:8000/weave/embed?"+ VIZ + "&ref="  +ref + "&e=" + DHW_EDITABLE;
+		iF.src = "http://" + DHW_HOST+ "/weave/embed?"+ VIZ + "&ref="  +ref + "&e=" + DHW_EDITABLE;
 		var targ = document.getElementById(DHW_ID);
 		targ.appendChild(iF);
 		DHWEAVE.container = iF;
