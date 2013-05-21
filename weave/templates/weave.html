@@ -53,7 +53,9 @@
 
 		var swfVersionStr = "10.2.0";
 		var xiSwfUrlStr = "{{weave_root}}playerProductInstall.swf";
-		var flashvars = {};
+		var flashvars = {
+			'allowDomain':"{{weave_allowed_domain}}"
+		};
 		var params = {};
 		params.quality = "high";
 		params.bgcolor = "#7B96B6";

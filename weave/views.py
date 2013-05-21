@@ -127,6 +127,7 @@ def embed_weave(request):
         dh_refered = False
 
     ctx['weave_root'] = getattr(settings,'WEAVE_ROOT', "http://127.0.0.1:8081/") # SETTING
+    ctx['weave_allowed_domain'] = getattr(settings, 'WEAVE_ALLOWED_DOMAIN', "127.0.0.1")
     ctx['dh_refered'] = dh_refered
     ctx['height'] = height
     ctx['width'] = width
