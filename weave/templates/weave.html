@@ -26,9 +26,11 @@
     	{#% if dh_refered %#}
 	<link rel="stylesheet" href="{% static 'css/dh-weave.css' %}" type="text/css" media="screen" title="no title" charset="utf-8">
 	{#% endif %#}
+	<link rel="stylesheet" href="{% static 'stylesheets/atooltip.css' %}" type="text/css" media="screen" title="no title" charset="utf-8">
 	<script type="text/javascript" src="{{weave_root}}swfobject.js"></script>
 	<script type="text/javascript" src="{% static 'js/jquery-1.9.1.min.js' %}"></script>
 	<script type="text/javascript" src="{% static 'js/dh-weave.js' %}"></script>
+	<script type="text/javascript" src="{% static 'javascripts/jquery.atooltip.js' %}"></script>
 	<script type="text/javascript">
 		var weaveReady = function(myWeave) {
 			DHWEAVE.setWeaveObj(myWeave);
@@ -137,7 +139,7 @@
 			{% if authenticated %}
 			 <div id="load-weavefile">
           			<h3><a href="" class="cboxElement" style="display: inline;">Your WeaveFiles</a></h3>
-          			<a href="" class="weave-action-icon cboxElement" title="" style="display: inline;"><img src="/static/images/icons/white_icon_load_weavefile.png" alt="Load Previously Saved WeaveFiles from your Portfolio"></a>
+          			<a href="" class="weave-action-icon cboxElement" title="Load Previously Saved WeaveFiles From your Portfolio" style="display: inline;"><img src="/static/images/icons/white_icon_load_weavefile.png" alt="Load Previously Saved WeaveFiles from your Portfolio"></a>
 			</div>
 			<div id="save-weavefile">
          			<h3><a href="" class="cboxElement" style="display: inline;">Save WeaveFile</a></h3>
@@ -185,6 +187,8 @@
 				//console.log(e);
 				DHWEAVE.updatePageFromHash()
 			}
+
+			$("a.weave-action-icon").aToolTip();
 
 
 		});
