@@ -4,7 +4,6 @@ var DHWEAVE = DHWEAVE || {};
 DHWEAVE.Settings = {
 	baseUrl:'',
 	WObj:null
-
 }
 
 extend(DHWEAVE, {
@@ -107,22 +106,27 @@ eave.html
 		}
 		return state;
 	},
-
+	
+	cleanCategoryTitle:function(text){
+		text = text.replace("<", "Less Than");
+		text = text.replace(">", "Greater Than");
+		return text;
+	},
 	
 	updateSessionDataSources:function(category_label, data){
 		/*Update the Weave Datasources from well formated json*/
 		var self = this;
 		var output;
 		output = "<hierarchy>%s</hierarchy>";
-		var dataStr = "";	
+		var dataStr = "";
 		var new_hierarchy = self.Settings.WObj.path().push(category_label).request('WeaveDataSource');
 		var currObj;
 		for(var prop in data){
-			dataStr += '<category title="'+prop+'">';
+			dataStr += '<category title="'+self.cleanCategoryTitle(prop)+'">';
 			// now we have to create he nested categories
 			currObj = data[prop];
 			for(var prop in currObj){
-				dataStr += '<category title="'+prop+'">'; // this is the dataTable level
+				dataStr += '<category title="'+self.cleanCategoryTitle(prop)+'">'; // this is the dataTable level
 				for(var attr in currObj[prop]){
 					var obj = currObj[prop][attr];
 					
@@ -142,6 +146,7 @@ eave.html
 		}
 		
 		output = output.replace("%s", dataStr);
+		console.log(output);
 		var newState = {
 			attributeHierarchy : output
 		}

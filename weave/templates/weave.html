@@ -41,11 +41,12 @@
 			{% if dh_refered and editable %}{# TODO: hardcoded accounts url :( #}
 			$.getJSON("/accounts/ilist/list/", function(data){
 				if(data.hasOwnProperty('user_ilists')){
-					DHWEAVE.updateSessionDataSources('Your Ilists', data['user_ilists']);
+					DHWEAVE.updateSessionDataSources('Your iLists', data['user_ilists']);
+					
 					
 				}
 				if(data.hasOwnProperty('default_ilists')){
-					DHWEAVE.updateSessionDataSources('Default Lists', data['default_ilists']);
+					DHWEAVE.updateSessionDataSources('Default iLists', data['default_ilists']);
 				}
 					
 			});
@@ -132,11 +133,11 @@
     		{% if dh_refered and editable %}
 		<div id="weave-tools">
 			<div id="tools-wrap">
+			{% if authenticated %}
 			<div id="weave-help" class='first'>
 				<h3><a href="#" id="weave-help-btn">Help</a></h3>
           		<a href="" class="weave-action-icon" title="Getting Started with Weave"><img src="/static/images/icons/icon_weave_help_2.png" alt="Getting Started with Weave"></a>
 			</div>
-			{% if authenticated %}
 			 <div id="load-weavefile">
           			<h3><a href="" class="cboxElement" style="display: inline;">Your WeaveFiles</a></h3>
           			<a href="" class="weave-action-icon cboxElement" title="Load Previously Saved WeaveFiles From your Portfolio" style="display: inline;"><img src="/static/images/icons/white_icon_load_weavefile.png" alt="Load Previously Saved WeaveFiles from your Portfolio"></a>
@@ -145,6 +146,12 @@
          			<h3><a href="" class="cboxElement" style="display: inline;">Save WeaveFile</a></h3>
          			 <a href="" class="weave-action-icon cboxElement" title="Save your work to a WeaveFile in your Portfolio" style="display: inline;"><img src="/static/images/icons/icon_save_weavefile.png" alt="Save your work to a WeaveFile in your Portfolio"></a>
 			 </div>
+		 	</div>
+			{%else%}
+
+			<div id="weave-help" class='single first'>
+				<h3><a href="#" id="weave-help-btn">Help</a></h3>
+          		<a href="" class="weave-action-icon" title="Getting Started with Weave"><img src="/static/images/icons/icon_weave_help_2.png" alt="Getting Started with Weave"></a>
 			</div>
 			{%endif%}
 		</div>
@@ -192,8 +199,6 @@
 
 
 		});
-
-
 
 	</script>
 </html>

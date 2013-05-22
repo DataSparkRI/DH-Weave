@@ -48,13 +48,17 @@ input, textarea, select, option {
 	border-bottom: 0 none;
 }
 
-#weave-tools div {text-align:center;
+#weave-tools div {
+	text-align:center;
 	display:inline-block;
 	margin-left:200px;
 	position:relative;
 }
 
 #weave-tools div.first{margin:0px;}
+
+#weave-tools div.single{position:absolute; left:0}
+
 
 #weave-tools h3{margin:0px;font-weight:normal}
 
