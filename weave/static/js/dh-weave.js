@@ -108,8 +108,8 @@ eave.html
 	},
 	
 	cleanCategoryTitle:function(text){
-		text = text.replace("<", "Less Than");
-		text = text.replace(">", "Greater Than");
+		//text = text.replace("<", "Less Than");
+		//text = text.replace(">", "Greater Than");
 		return text;
 	},
 	
@@ -146,10 +146,13 @@ eave.html
 		}
 		
 		output = output.replace("%s", dataStr);
-		console.log(output);
+		output = output.replace(/<(?=\d)/g, "Less Than ");
+		output = output.replace(/>(?=\d)/g, "Greater Than ");
+
 		var newState = {
 			attributeHierarchy : output
 		}
+
 		new_hierarchy.state(newState);
 
 	},
