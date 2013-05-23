@@ -121,6 +121,7 @@ eave.html
 		var dataStr = "";
 		var new_hierarchy = self.Settings.WObj.path().push(category_label).request('WeaveDataSource');
 		var currObj;
+
 		for(var prop in data){
 			dataStr += '<category title="'+self.cleanCategoryTitle(prop)+'">';
 			// now we have to create he nested categories
