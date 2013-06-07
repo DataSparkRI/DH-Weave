@@ -32,7 +32,7 @@ def get_or_create_data_table(tbl_name):
     try:
         # try to find a meta entry with this name, it may be what we are
         # looking for
-        m = WeaveMetaPublic.objects.get(meta_name='title',meta_value=tbl_name)
+        m = WeaveMetaPublic.objects.get(meta_name='title',meta_value=tbl_name, h_e_index__isnull=False)
         return m.entity_id
 
     except WeaveMetaPublic.DoesNotExist:

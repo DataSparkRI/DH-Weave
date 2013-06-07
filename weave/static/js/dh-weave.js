@@ -3,7 +3,8 @@ var DHWEAVE = DHWEAVE || {};
 
 DHWEAVE.Settings = {
 	baseUrl:'',
-	WObj:null
+	WObj:null,
+	callbacks : []
 }
 
 extend(DHWEAVE, {
@@ -39,6 +40,8 @@ extend(DHWEAVE, {
 					}
 				}
 			});
+		}else if(action==="acb"){
+			self.addCallback(param);
 		}	
 	},
 	loadClientConfig:function(id){
@@ -206,6 +209,22 @@ eave.html
 			$(mbox).remove();	
 		});
 
+	},
+
+	addCallback:function(callback){
+		var self = this;
+		self.Settings.callbacks.push(callback);
+		console.log(callback);
+		var path = self.Settings.WObj.path();
+		var toolPath = self.Settings.WObj.path(path.getNames());
+		toolPath.addCallback(function(weave){
+			self.runCallback(weave, callback); //the weave data
+		}, false);
+
+	},
+
+	runCallback:function(weave, callbackName){
+		window.parent.DHWEAVE.callbacks[callbackName](weave);
 	}
 		
 });
@@ -226,32 +245,34 @@ function extend(destination, source) {
     return destination;
 };
 
+
 window.onload = function(){
  
-  // exit if the browser implements that event
-  if ( window.document.body.hasOwnProperty('onhashchange') ) { return; }
- 
-  var location = window.location,
-    oldURL = location.href,
-    oldHash = location.hash;
- 
-  // check the location hash on a 100ms interval
-  setInterval(function() {
-    var newURL = location.href,
-      newHash = location.hash;
- 
-    // if the hash has changed and a handler has been bound...
-    if ( newHash != oldHash && typeof window.onhashchange === "function" ) {
-      // execute the handler
-      window.onhashchange({
-        type: "hashchange",
-        oldURL: oldURL,
-        newURL: newURL
-      });
- 
-      oldURL = newURL;
-      oldHash = newHash;
-    }
-  }, 100);
- 
+	  // exit if the browser implements that event
+	  if ( window.document.body.hasOwnProperty('onhashchange') ) { return; }
+	 
+	  var location = window.location,
+	    oldURL = location.href,
+	    oldHash = location.hash;
+	 
+	  // check the location hash on a 100ms interval
+	  setInterval(function() {
+	    var newURL = location.href,
+	      newHash = location.hash;
+	 
+	    // if the hash has changed and a handler has been bound...
+	    if ( newHash != oldHash && typeof window.onhashchange === "function" ) {
+	      // execute the handler
+	      window.onhashchange({
+	        type: "hashchange",
+	        oldURL: oldURL,
+	        newURL: newURL
+	      });
+	 
+	      oldURL = newURL;
+	      oldHash = newHash;
+	    }
+	  }, 100);
+
+	
 }
