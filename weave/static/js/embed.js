@@ -51,6 +51,9 @@ extend(DHWEAVE, {
 		DHWEAVE.callbacks[h] = callback;
 		DHWEAVE.container.src = DHWEAVE.ogURL + "#acb=" + h;
 	},
+	ready:function(){
+		// overide this method
+	}
 
 
 });
@@ -189,7 +192,4 @@ function extend(destination, source) {
 
 $d(function(){
 	DHWEAVE.embed();
-	if(typeof DHWEAVE.ready != 'undefined'){
-		DHWEAVE.ready()
-	}
 });

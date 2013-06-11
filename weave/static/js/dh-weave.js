@@ -4,7 +4,8 @@ var DHWEAVE = DHWEAVE || {};
 DHWEAVE.Settings = {
 	baseUrl:'',
 	WObj:null,
-	callbacks : []
+	callbacks : [],
+	apiready: false
 }
 
 extend(DHWEAVE, {
@@ -93,6 +94,16 @@ extend(DHWEAVE, {
 	setWeaveObj:function(weaveObj){
 		var self = this;
 		self.Settings.WObj = weaveObj;
+
+		// add an event listener to the weave path so we know when the api is ready
+		//var p = DHWEAVE.Settings.WObj.path();
+		/*
+		p.addCallback(function(){
+			console.log(self.apiready);
+		});
+		*/
+		//window.parent.DHWEAVE.ready();
+
 	},
 	
 	getSessionDataSources:function(){
@@ -213,18 +224,30 @@ eave.html
 
 	addCallback:function(callback){
 		var self = this;
+		//var path = self.Settings.WObj.path();
+		var path = self.Settings.WObj.path("CompoundBarChartTool", "children", "visualization", "plotManager", "plotters", "plot", "heightColumns", "DynamicColumn")
 		self.Settings.callbacks.push(callback);
-		console.log(callback);
-		var path = self.Settings.WObj.path();
-		var toolPath = self.Settings.WObj.path(path.getNames());
-		toolPath.addCallback(function(weave){
+		path.addCallback(function(weave){
 			self.runCallback(weave, callback); //the weave data
 		}, false);
-
 	},
 
 	runCallback:function(weave, callbackName){
-		window.parent.DHWEAVE.callbacks[callbackName](weave);
+		if(self != top) window.parent.DHWEAVE.callbacks[callbackName](weave);
+	},
+	
+	getAPIReady:function(){
+		var self = this;
+		window.apiInt = setInterval(function(){
+			var p = self.Settings.WObj.path();
+			if(p.hasOwnProperty('weave')){
+				clearInterval(window.apiInt);
+				self.Settings.apiready = true;
+				// alert parent window
+				if(window != top) window.parent.DHWEAVE.ready();
+			}
+		},1000);
+		
 	}
 		
 });

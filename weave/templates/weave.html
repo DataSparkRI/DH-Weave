@@ -35,7 +35,6 @@
 		var weaveReady = function(myWeave) {
 			DHWEAVE.setWeaveObj(myWeave);
 			DHWEAVE.Settings.baseUrl = "http://{{host}}/";
-			DHWEAVE.updatePageFromHash();
 			{% if client_config %}
 				DHWEAVE.loadClientConfig({{client_config}});
 			{% endif %}	
@@ -52,6 +51,8 @@
 					
 			});
 			{% endif %}
+			var weave = document.getElementById('weave');
+			DHWEAVE.getAPIReady();
 
 		}
 
