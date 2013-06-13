@@ -9,13 +9,41 @@ DHWEAVE.Settings = {
 }
 
 extend(DHWEAVE, {
+	getCurrentViz:function(){
+		var self = this;
+		var g = $GET(window.location.search);
+		if(g.hasOwnProperty('file')){
+			if(g.file !== 'default.xml'){
+				return g.file;
+			}else{
+				return g.cc;
+			}
+		}
+	},
+	getEmbedCode:function(viz){
+		var self = this;
+		if(typeof viz == 'undefined'){
+			viz = self.getCurrentViz();
+		}
+
+		var code = "<!-- Begin Weave Code-->\n";
+		code += '<script type="text/javascript" charset="utf-8">\n\n';
+		code += '/* The Following varibles are required!*/\n';
+		code += "var DHW_ID ='weave-container'; // this should be the 'id' of the div you are wanting to use to contain the Weave Vizie\n";
+		code += "var DHW_VIZ = '%s';\n".replace("%s", viz);
+		code += '</script>\n';
+		code += '<script src="http://%sstatic/js/embed.js"></script>\n'.replace(/%s/, self.Settings.baseUrl);
+		code += '<!-- end Weave Code-->';
+		return code;
+		
+	},
 	getWeaveStateKeys:function(){
 		/*return a list of default weave session state items
 		 * TODO: SHould this use path().getNames()?
 		 * */
 		var self = this;
 		var ssKeys = [];
-		var state = self.Settings.WObj.path().getState()
+		var state = self.Settings.WObj.path().getState();
 		for(var i in state){
 			ssKeys.push(state[i].className)
 		}
@@ -248,6 +276,41 @@ eave.html
 			}
 		},1000);
 		
+	},
+	showEmbedCode:function(htmlStr){
+		$('.weave-mbox').remove();
+		var mbox = document.createElement('div');
+		mbox.className = "weave-mbox";
+		mbox.className += " left";
+		mbox = $(mbox);
+		mbox.html("<h4> Place this code in your webpage</h4><textarea>" + htmlStr + "</textarea>");
+		mbox.css({
+			position:"absolute",
+			width: window.innerWidth > 300 ? 400 : window.innerWidth,
+		});
+
+		mbox.css({
+			'left': (window.innerWidth/2) - (mbox.width()/2),
+			'top': (window.innerHeight/2) - (mbox.height()/2),
+		});
+
+		var cb = document.createElement('a');
+		cb.innerText = "X";
+		cb.href = "#";
+		cb.className = "close-btn";
+
+		mbox.prepend(cb);
+
+		$(cb).click(function(e){
+			e.preventDefault();
+			$(".weave-mbox").remove();
+
+		});
+		
+		$('body').append(mbox);
+
+
+
 	}
 		
 });
@@ -298,4 +361,20 @@ window.onload = function(){
 	  }, 100);
 
 	
+}
+
+function $GET(url){
+    /*
+    * Converts get params to an object. Ex: &foo=bar => {foo:bar}
+    *
+    * */
+    var argsRaw = url.split("&");
+    var args = {};
+    // split up the args into an objects
+    for (var i in argsRaw){
+        var vals = argsRaw[i].split("=");
+        args[vals[0].replace("?",'')] = vals[1];
+    }
+
+    return args;
 }
