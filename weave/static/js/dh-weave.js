@@ -27,9 +27,9 @@ extend(DHWEAVE, {
 		}
 
 		var code = "<!-- Begin Weave Code-->\n";
-		code += '<script type="text/javascript" charset="utf-8">\n\n';
-		code += '/* The Following varibles are required!*/\n';
-		code += "var DHW_ID ='weave-container'; // this should be the 'id' of the div you are wanting to use to contain the Weave Vizie\n";
+		code += '<script type="text/javascript" charset="utf-8">\n';
+		code += '/* The Following variables are required!*/\n';
+		code += "var DHW_ID ='weave-container'; // this should be the 'id' of the div you want to use to contain the Weave Vizie\n";
 		code += "var DHW_VIZ = '%s';\n".replace("%s", viz);
 		code += '</script>\n';
 		code += '<script src="http://%sstatic/js/embed.js"></script>\n'.replace(/%s/, self.Settings.baseUrl);
@@ -122,15 +122,6 @@ extend(DHWEAVE, {
 	setWeaveObj:function(weaveObj){
 		var self = this;
 		self.Settings.WObj = weaveObj;
-
-		// add an event listener to the weave path so we know when the api is ready
-		//var p = DHWEAVE.Settings.WObj.path();
-		/*
-		p.addCallback(function(){
-			console.log(self.apiready);
-		});
-		*/
-		//window.parent.DHWEAVE.ready();
 
 	},
 	
@@ -278,6 +269,11 @@ eave.html
 		
 	},
 	showEmbedCode:function(htmlStr){
+		try{
+			$.fn
+		}catch(err){
+			$ = jQuery;
+		}
 		$('.weave-mbox').remove();
 		var mbox = document.createElement('div');
 		mbox.className = "weave-mbox";
@@ -291,7 +287,7 @@ eave.html
 
 		mbox.css({
 			'left': (window.innerWidth/2) - (mbox.width()/2),
-			'top': (window.innerHeight/2) - (mbox.height()/2),
+			'top': 100,
 		});
 
 		var cb = document.createElement('a');

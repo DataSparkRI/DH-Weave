@@ -55,7 +55,7 @@
 			DHWEAVE.getAPIReady();
 
 		}
-		var fHeight = 20;
+		var fHeight = 0;
 		var swfVersionStr = "10.2.0";
 		var xiSwfUrlStr = "{{weave_root}}playerProductInstall.swf";
 		var flashvars = {
@@ -159,9 +159,12 @@
 			{%endif%}
 		</div>
 		{%endif%}
-		<div id="weave-footer">
-			<a class="weave-embed-link" href="#" target="">Embed Code</a>
+		{%if editable%}
+		{%else%}
+		<div id="weave-share">
+			<a class="weave-embed-link" href="#" target="">Embed This</a>
 		</div>
+		{%endif%}
 
 	</body>
 	<script type="text/javascript" charset="utf-8">
@@ -196,7 +199,6 @@
 			});
 
 			window.onhashchange = function(e){
-				//console.log(e);
 				DHWEAVE.updatePageFromHash();
 			}
 
