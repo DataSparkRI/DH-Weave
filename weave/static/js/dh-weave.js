@@ -32,7 +32,7 @@ extend(DHWEAVE, {
 		code += "var DHW_ID ='weave-container'; // this should be the 'id' of the div you want to use to contain the Weave Vizie\n";
 		code += "var DHW_VIZ = '%s';\n".replace("%s", viz);
 		code += '</script>\n';
-		code += '<script src="http://%sstatic/js/embed.js"></script>\n'.replace(/%s/, self.Settings.baseUrl);
+		code += '<script src="http://%s/static/js/embed.js"></script>\n'.replace(/%s/, window.location.host);
 		code += '<!-- end Weave Code-->';
 		return code;
 		
