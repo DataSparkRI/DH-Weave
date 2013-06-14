@@ -264,7 +264,11 @@ eave.html
 				clearInterval(window.apiInt);
 				self.Settings.apiready = true;
 				// alert parent window
-				if(window != top) window.parent.DHWEAVE.ready();
+				if(window != top){
+					if(window.parent.DHWEAVE != undefined){
+				       		window.parent.DHWEAVE.ready();
+					}
+				}
 			}
 		},1000);
 		

@@ -33,12 +33,11 @@ extend(DHWEAVE, {
 		iF.width = "100%";
 		iF.scrolling="no";
 		iF.src = "http://" + DHW_HOST+ "/weave/embed?"+ VIZ + "&ref="  +ref + "&e=" + DHW_EDITABLE;
+		iF.style.border = "none";
 		var targ = document.getElementById(DHW_ID);
 		targ.appendChild(iF);
 		DHWEAVE.container = iF;
 		DHWEAVE.ogURL = iF.src;
-
-
 	},
 	loadWF:function(wfId){
 		DHWEAVE.container.src = DHWEAVE.ogURL + "#lwf=" + wfId;
