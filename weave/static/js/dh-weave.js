@@ -296,7 +296,7 @@ eave.html
 		});
 
 		var cb = document.createElement('a');
-		cb.innerText = "X";
+		$(cb).text("X");
 		cb.href = "#";
 		cb.className = "close-btn";
 
