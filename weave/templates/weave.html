@@ -31,6 +31,7 @@
 	<script type="text/javascript" src="{% static 'js/jquery-1.9.1.min.js' %}"></script>
 	<script type="text/javascript" src="{% static 'js/dh-weave.js' %}"></script>
 	<script type="text/javascript" src="{% static 'javascripts/jquery.atooltip.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/ObjTree.js' %}"></script>	
 	<script type="text/javascript">
 		var weaveReady = function(myWeave) {
 			DHWEAVE.setWeaveObj(myWeave);
@@ -40,6 +41,9 @@
 			{% endif %}	
 			{% if dh_refered and editable %}{# TODO: hardcoded accounts url :( #}
 			$.getJSON("/accounts/ilist/list/", function(data){
+
+				DHWEAVE.updateUNPDataSource(data['unp']);
+				
 				if(data.hasOwnProperty('user_ilists')){
 					if(!$.isEmptyObject(data['user_ilists'])){
 						DHWEAVE.updateSessionDataSources('Your iLists', data['user_ilists']);
@@ -48,6 +52,8 @@
 				if(data.hasOwnProperty('default_ilists')){
 					DHWEAVE.updateSessionDataSources('Default iLists', data['default_ilists']);
 				}
+
+
 					
 			});
 			{% endif %}

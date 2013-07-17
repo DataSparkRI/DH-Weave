@@ -1,4 +1,5 @@
-/*WEAVE JS tools, requires Jquery*/
+/*WEAVE JS tools, requires Jquery
+ * requires XML.ObjTree http://www.kawa.net/works/js/xml/objtree-e.html*/
 var DHWEAVE = DHWEAVE || {};
 
 DHWEAVE.Settings = {
@@ -131,14 +132,46 @@ extend(DHWEAVE, {
 		// iterate the session state objects and return the DataSources member attribute column
 		var stateList = self.Settings.WObj.path().getState();
 		var state;
-		for(var i in stateList){	
-eave.html
+		for(var i in stateList){
 			state = stateList[i];
 			if(state.objectName === "WeaveDataSource"){
 				break;
 			}
 		}
 		return state;
+	},
+	updateUNPDataSource:function(uData){
+		var self = this;
+		var ds = DHWEAVE.Settings.WObj.path("WeaveDataSource").getState();
+		var xmlParser = new XML.ObjTree();
+		self.OG_DAH_XML = ds.attributeHierarchy.XMLString;
+		self.OG_DAH = xmlParser.parseXML(ds.attributeHierarchy.XMLString);
+		var cat;
+		var attr;
+		for(var i in self.OG_DAH.hierarchy.category[0].category){
+			cat = self.OG_DAH.hierarchy.category[0].category[i]; // this gives us categories
+			if(cat.hasOwnProperty('attribute')){
+				var attr_index;
+				if(cat.attribute.hasOwnProperty('length')){
+					for(attr_index=0; attr_index< cat.attribute.length; attr_index++){
+						attr = cat.attribute[attr_index];
+						if($.inArray(parseInt(attr["-object_id"]), uData)!= -1){
+							// remove from the list
+							cat.attribute.splice(attr_index, 1);
+							attr_index -=1;
+						}
+					}
+				}
+			}
+		}
+		//update the state
+		var output = xmlParser.writeXML(self.OG_DAH);
+		output = output.replace('<?xml version="1.0" encoding="UTF-8" ?>',"");
+		var newState = {
+			attributeHierarchy : output
+		}
+		DHWEAVE.Settings.WObj.path("WeaveDataSource").state(newState);
+
 	},
 	
 	cleanCategoryTitle:function(text){

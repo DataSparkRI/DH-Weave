@@ -88,3 +88,31 @@ def deprecated(func):
 
 
 
+def get_related_items_entity_id(object_id=None,year=None, dataTable=None, name=None, title=None):
+    """ Deduce the entity id of these weave items"""
+    if object_id:
+        obj = WeaveMetaPublic.objects.get(meta_name='object_id', meta_value=object_id)
+        print obj.entity_id
+
+    if year:
+        obj = WeaveMetaPublic.objects.get(meta_name='year', meta_value=year)
+        print obj.entity_id
+
+    if dataTable:
+        obj = WeaveMetaPublic.objects.get(meta_name='dataTable', meta_value=dataTable)
+        print obj.entity_id
+
+    if name:
+        obj = WeaveMetaPublic.objects.get(meta_name='name', meta_value=name)
+        print obj.entity_id
+
+    if title:
+        obj = WeaveMetaPublic.objects.get(meta_name='title', meta_value=title)
+        print obj.entity_id
+
+
+
+
+
+
+
