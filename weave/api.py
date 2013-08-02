@@ -104,8 +104,18 @@ def insert_data_row(parent_id, title, name, data_type, sql_query, object_id, yea
     for pm in REQUIRED_PRIVATE_META:
         WeaveMetaPrivate(h_e_index=hei, entity_id=m.entity_id, meta_name=pm[0], meta_value=pm[1]).save()
 
+    # kwargs for later use
+    weave_flat_meta_kwargs = {
+        'h_e_index':hei,
+        'weaveEntityId':m.entity_id,
+    }
+
     for pm in REQUIRED_PUBLIC_META:
         WeaveMetaPublic(h_e_index=hei, entity_id=m.entity_id, meta_name=pm[0], meta_value=pm[1]).save()
+        weave_flat_meta_kwargs[pm[0]] = pm[1]
+
+    # Using the kwargs we've collected, create a flat version of all the related weave meta public
+    WeaveFlatPublicMeta.objects.create(**weave_flat_meta_kwargs)
 
 
 def clear_generated_meta():
@@ -135,7 +145,7 @@ def get_hierarchy_as_xml():
 def get_weave_item_as_dict(entity_id):
     """ Return a dict of related weave entity items """
     attribute = {}
-    items = WeaveMetaPublic.objects.filter(entity_id=entity_id).distinct('meta_name')
+    items = WeaveMetaPublic.objects.filter(entity_id=entity_id).distinct('meta_name').only('meta_value')
     attribute['weaveEntityId'] = entity_id
     for item in items:
         attribute[item.meta_name] = item.meta_value

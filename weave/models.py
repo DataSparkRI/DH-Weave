@@ -11,7 +11,7 @@ class HubEntityIndex(models.Model):
 
 class WeaveManifest(models.Model):
     h_e_index = models.ForeignKey(HubEntityIndex, null=True)
-    entity_id = models.AutoField(primary_key=True)
+    entity_id = models.AutoField(primary_key=True, db_index=True)
     type_id = models.SmallIntegerField()
 
     class Meta:
@@ -24,7 +24,7 @@ class WeaveManifest(models.Model):
 class WeaveMeta(models.Model):
     """ Abstract class for weave_meta_private and weave_meta_public"""
     h_e_index = models.ForeignKey(HubEntityIndex, null=True)
-    entity_id = models.BigIntegerField() # this is not a ForiegnKey on purpose
+    entity_id = models.BigIntegerField(db_index=True) # this is not a ForiegnKey on purpose
     meta_name = models.CharField(max_length=255, db_index=True)
     meta_value = models.CharField(max_length=2048, blank=True, db_index=True)
 
@@ -33,6 +33,36 @@ class WeaveMeta(models.Model):
 
     def __unicode__(self):
         return "E_id: %s Name: %s Value: %s" % (self.entity_id, self.meta_name, self.meta_value)
+
+class WeaveFlatPublicMeta(models.Model):
+    """ A flat aggregate version of weave public meta"""
+    h_e_index = models.ForeignKey(HubEntityIndex, null=True)
+    weaveEntityId = models.BigIntegerField(db_index=True)
+    min = models.CharField(max_length=255, blank=True, null=True)
+    max = models.CharField(max_length=255, blank=True, null=True)
+    dataType = models.CharField(max_length=255, blank=True, null=True)
+    keyType = models.CharField(max_length=255, blank=True, null=True)
+    object_id = models.CharField(max_length=255, blank=True, null=True, db_index=True)
+    title = models.CharField(max_length=255, blank=True, null=True)
+    name = models.CharField(max_length=255, blank=True, null=True)
+    year = models.CharField(max_length=255, blank=True, null=True)
+    dataTable = models.CharField(max_length=255, blank=True, null=True)
+
+
+    def to_dict(self):
+        d = {
+                'weaveEntityId':  self.weaveEntityId,
+                'min' : self.min,
+                'max' : self.max,
+                'dataType': self.dataType,
+                'keyType': self.keyType,
+                'object_id': self.object_id,
+                'title': self.title,
+                'name': self.name,
+                'year': self.year,
+                'dataTable':self.dataTable,
+        }
+        return d
 
 
 class WeaveMetaPublic(WeaveMeta):
@@ -46,8 +76,8 @@ class WeaveMetaPrivate(WeaveMeta):
 
 class WeaveHierarchy(models.Model):
     h_e_index = models.ForeignKey(HubEntityIndex, null=True)
-    parent_id = models.BigIntegerField()
-    child_id = models.BigIntegerField()
+    parent_id = models.BigIntegerField(db_index=True)
+    child_id = models.BigIntegerField(db_index=True)
     sort_order = models.IntegerField()
 
     class Meta:

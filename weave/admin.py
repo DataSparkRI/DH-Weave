@@ -7,9 +7,9 @@ class ClientConfigurationAdmin(admin.ModelAdmin):
 
 
 
-#admin.site.register(WeaveManifest)
-#admin.site.register(WeaveMetaPublic)
-#admin.site.register(WeaveMetaPrivate)
-#admin.site.register(WeaveHierarchy)
+admin.site.register(WeaveManifest)
+admin.site.register(WeaveMetaPublic)
+admin.site.register(WeaveMetaPrivate)
+admin.site.register(WeaveFlatPublicMeta)
 admin.site.register(DataFilter)
 admin.site.register(ClientConfiguration, ClientConfigurationAdmin)
