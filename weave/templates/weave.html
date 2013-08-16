@@ -17,6 +17,28 @@
 		
             	object:focus { outline:none;}
 		#flashContent { display:none;}
+
+		#no-flash{
+			padding:20px;
+			background:#f8f8f8;
+			height:500px;
+
+		}
+
+		#no-flash p{
+			width:500px;
+			margin:0 auto;
+			line-height:25px;
+			font-size:20px;
+			padding:10px 0px;
+			text-align:center;
+			color:#555555;
+		}
+		#no-flash p#message{
+			margin-top:100px;
+		}
+
+
 		h1.title{
 			background:#efefef;
 			width:100%;
@@ -96,16 +118,19 @@
 	{%if ttl%}
 		<h1 class="title">{{ttl}}</h1>
 	{%endif%}
-        <div id="flashContent">
-            <p>
-                To view this page ensure that Adobe Flash Player version 
-                10.2.0 or greater is installed. 
-            </p>
-            <script type="text/javascript"> 
-                var pageHost = ((document.location.protocol == "https:") ? "https://" : "http://"); 
-                document.write("<a href='http://www.adobe.com/go/getflashplayer'><img src='" 
-                                + pageHost + "www.adobe.com/images/shared/download_buttons/get_flash_player.gif' alt='Get Adobe Flash player' /></a>" ); 
-            </script> 
+	<div id="flashContent">
+		<div id="no-flash">
+			<p id="message">
+			To view this page ensure that Adobe Flash Player version 10.2.0 or greater is installed. 
+			</p>
+			<p>
+			<script type="text/javascript"> 
+			var pageHost = ((document.location.protocol == "https:") ? "https://" : "http://"); 
+			document.write("<a href='http://www.adobe.com/go/getflashplayer'><img src='" 
+					+ pageHost + "www.adobe.com/images/shared/download_buttons/get_flash_player.gif' alt='Get Adobe Flash player' /></a>" ); 
+		    	</script> 
+			</p>
+		   </div>
         </div>
         
         <noscript>
