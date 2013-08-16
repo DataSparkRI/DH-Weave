@@ -168,6 +168,8 @@
 		<div id="weave-tools">
 			<div id="tools-wrap">
 			{% if authenticated %}
+			<span id="weave-file-name"><b>Current Weave File:</b> Untitled</span>
+			
 			<div id="weave-help" class='first'>
 				<h3><a href="#" id="weave-help-btn">Help</a></h3>
           		<a href="" class="weave-action-icon" title="Getting Started with Weave"><img src="/static/images/icons/icon_weave_help_2.png" alt="Getting Started with Weave"></a>
@@ -181,6 +183,7 @@
          			 <a href="" class="weave-action-icon cboxElement" title="Save your work to a WeaveFile in your Portfolio" style="display: inline;"><img src="/static/images/icons/icon_save_weavefile.png" alt="Save your work to a WeaveFile in your Portfolio"></a>
 			 </div>
 		 	</div>
+		 	
 			{%else%}
 
 			<div id="weave-help" class='single first'>

@@ -34,7 +34,9 @@ def get_user_configs(request):
 
 
 def get_client_config(request, config_id):
-    """ Return client configs storede in the database """
+    """ Return client configs storede in the database
+        NOTE: Right now all client configs are of content_format 'json'
+    """
     try:
         # find the client config by id, if its public continue else, check
         # for to see if the user is the right one
@@ -49,7 +51,9 @@ def get_client_config(request, config_id):
         if config.content_format == 'xml':
             return HttpResponse(config.content, mimetype="application/xml")
         elif config.content_format == 'json':
-            return HttpResponse(config.content, mimetype="application/json")
+            result = json.dumps({'cc_name': config.name})
+            result = result.replace("}", ', "content":%s}' % config.content)
+            return HttpResponse(result, mimetype="application/json")
 
     except ClientConfiguration.DoesNotExist:
         raise Http404

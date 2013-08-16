@@ -75,6 +75,10 @@ extend(DHWEAVE, {
 			self.addCallback(param);
 		}	
 	},
+	updateWeaveFileName:function(name){
+		/*Update the name of the weave file in the GUI*/
+		$("#weave-file-name").html('<b>Current Weave File:</b> ' + name)
+	},
 	loadClientConfig:function(id){
 		var self = this;
 		var validKeys = ['weave.data.DataSources::WeaveDataSource']; // This is a list of weave session state objects we dont want to let the saved session state overwrite.
@@ -82,6 +86,8 @@ extend(DHWEAVE, {
 		self.fetchClientConfig(id, function(data){
 			var cleaned_data =[]; // We need to clean up old client configurations data sources.
 			var match;
+			self.updateWeaveFileName(data.cc_name);
+			var data = data.content
 			for(var i=0 in data){
 				match = 0;
 			
@@ -97,7 +103,8 @@ extend(DHWEAVE, {
 				}
 			}
 			self.clearTools()
-			self.Settings.WObj.path().diff(cleaned_data);	
+			self.Settings.WObj.path().diff(cleaned_data);
+				
 		});
 	},
 	getToolsNames:function(){
@@ -175,8 +182,6 @@ extend(DHWEAVE, {
 	},
 	
 	cleanCategoryTitle:function(text){
-		//text = text.replace("<", "Less Than");
-		//text = text.replace(">", "Greater Than");
 		return text;
 	},
 	
@@ -244,6 +249,7 @@ extend(DHWEAVE, {
 				}, 
 				"json"
 		).done(function(data){
+			self.updateWeaveFileName(name);
 			if(typeof(callback)!=='undefined'){
 				callback(data);
 			}

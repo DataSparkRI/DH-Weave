@@ -57,8 +57,7 @@ input, textarea, select, option {
 
 #weave-tools div.first{margin:0px;}
 
-#weave-tools div.single{position:absolute; left:0}
-
+#weave-tools div.single{position:absolute; left:0;}
 
 #weave-tools h3{margin:0px;font-weight:normal}
 
@@ -115,3 +114,15 @@ input, textarea, select, option {
 	color:#999;
 	text-decoration:none;
 }
+
+#weave-file-name{
+	background: #e3e3e3;
+	color:#666;
+	font-size:10px;
+	position:absolute;
+	top:-22px;
+	right:20px;
+	padding:2px;
+}
+
+
