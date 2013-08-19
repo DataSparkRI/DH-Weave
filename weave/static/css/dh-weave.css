@@ -126,6 +126,10 @@ input, textarea, select, option {
 
 }
 
+#weave-file-name .notice{
+	color:red;
+}
+
 .anonuser{
 	padding:10px 0 0 10px;
 }
