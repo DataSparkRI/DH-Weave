@@ -32,7 +32,6 @@ input, textarea, select, option {
 	height: 78px;
 	background-color: #a44499;
 	position: relative;
-	
 }
 
 #weave-tools #tools-wrap{
@@ -118,7 +117,7 @@ input, textarea, select, option {
 #weave-file-name{
 	background: #e3e3e3;
 	color:#666;
-	font-size:9px;padding
+	font-size:10px;
 	padding:2px 0px 2px 5px;
 	display:block !important;
 	text-align:left !important;
