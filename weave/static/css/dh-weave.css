@@ -29,8 +29,7 @@ input, textarea, select, option {
   vertical-align: baseline;
 }
 #weave-tools{
-	padding: 0px 15px;
-	height: 75px;
+	height: 78px;
 	background-color: #a44499;
 	position: relative;
 	
@@ -38,12 +37,13 @@ input, textarea, select, option {
 
 #weave-tools #tools-wrap{
 	width:938px;
-	margin:5px auto 0px auto;
+	margin:0px auto 0px auto;
+	
 }
 
 #weave-tools a {
 	text-decoration: none;
-	font-size: 12px;
+	font-size: 11px;
 	color: #fff;
 	border-bottom: 0 none;
 }
@@ -118,11 +118,13 @@ input, textarea, select, option {
 #weave-file-name{
 	background: #e3e3e3;
 	color:#666;
-	font-size:10px;
-	position:absolute;
-	top:-22px;
-	right:20px;
-	padding:2px;
+	font-size:9px;
+	padding:2px 0px 2px 5px;
+	display:block !important;
+	text-align:left !important;
+	width:100% !important;
+	margin:0px !important;
+
 }
 
 

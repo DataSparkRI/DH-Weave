@@ -84,6 +84,7 @@
 
 		}
 		var fHeight = 0;
+		var weaveToolsHeight = 78;
 		var swfVersionStr = "10.2.0";
 		var xiSwfUrlStr = "{{weave_root}}playerProductInstall.swf";
 		var flashvars = {
@@ -103,7 +104,7 @@
 		attributes.align = "middle";
 		{%if editable and dh_refered%}
 		swfobject.embedSWF("{{weave_root}}weave.swf", "flashContent",
-				"100%", window.innerHeight-75, 
+				"100%", window.innerHeight-weaveToolsHeight, 
 		{%else%}
 		swfobject.embedSWF("{{weave_root}}weave.swf", "flashContent",
 				"100%", window.innerHeight-fHeight, 
@@ -166,10 +167,11 @@
     </noscript>
     		{% if dh_refered and editable %}
 		<div id="weave-tools">
+			{% if authenticated %}
+			<div id="weave-file-name"><b>Current Weave File:</b> Untitled</div>
+			{%endif%}
 			<div id="tools-wrap">
 			{% if authenticated %}
-			<span id="weave-file-name"><b>Current Weave File:</b> Untitled</span>
-			
 			<div id="weave-help" class='first'>
 				<h3><a href="#" id="weave-help-btn">Help</a></h3>
           		<a href="" class="weave-action-icon" title="Getting Started with Weave"><img src="/static/images/icons/icon_weave_help_2.png" alt="Getting Started with Weave"></a>
