@@ -118,7 +118,7 @@ input, textarea, select, option {
 #weave-file-name{
 	background: #e3e3e3;
 	color:#666;
-	font-size:9px;
+	font-size:9px;padding
 	padding:2px 0px 2px 5px;
 	display:block !important;
 	text-align:left !important;
@@ -127,4 +127,6 @@ input, textarea, select, option {
 
 }
 
-
+.anonuser{
+	padding:10px 0 0 10px;
+}
