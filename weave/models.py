@@ -64,6 +64,9 @@ class WeaveFlatPublicMeta(models.Model):
         }
         return d
 
+    def __unicode__(self):
+        return self.title
+
 
 class WeaveMetaPublic(WeaveMeta):
     class Meta:

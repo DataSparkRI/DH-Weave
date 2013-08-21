@@ -1,8 +1,12 @@
+import logging
 from weave.models import *
 from django.conf import settings
 
+log = logging.getLogger('datahub.indicator')
+
 WEAVE_SETTINGS = getattr(settings, "WEAVE", {})
 WEAVE_CONNECTION = getattr(WEAVE_SETTINGS, 'CONNECTION', "portal_db")
+
 
 def get_or_create_data_table(tbl_name):
     """ get or create a new data table into Weave Meta info
@@ -52,7 +56,7 @@ def get_or_create_data_table(tbl_name):
 
 
 def insert_data_row(parent_id, title, name, data_type, sql_query, object_id, year, key_type=None, data_table=None, min=None, max=None):
-    #print parent_id, title, key_type, data_table
+    #log.debug("parent id: %s, Title %s, key_Type: %s, data_table: %s" % (parent_id, title, key_type, data_table))
     """ Insert a data entity and create relationship to parent entity
         This should create
             1 HubEntityIndex
@@ -89,7 +93,7 @@ def insert_data_row(parent_id, title, name, data_type, sql_query, object_id, yea
         REQUIRED_PUBLIC_META += (
             ('dataTable', data_table),
         )
-
+    #log.debug(REQUIRED_PUBLIC_META)
     hei = HubEntityIndex()
     hei.save()
 
@@ -111,8 +115,7 @@ def insert_data_row(parent_id, title, name, data_type, sql_query, object_id, yea
     }
 
     for pm in REQUIRED_PUBLIC_META:
-        WeaveMetaPublic(h_e_index=hei, entity_id=m.entity_id, meta_name=pm[0], meta_value=pm[1]).save()
-        weave_flat_meta_kwargs[pm[0]] = pm[1]
+        WeaveMetaPublic.objects.create(h_e_index=hei, entity_id=m.entity_id, meta_name=pm[0], meta_value=pm[1])
 
     # Using the kwargs we've collected, create a flat version of all the related weave meta public
     WeaveFlatPublicMeta.objects.create(**weave_flat_meta_kwargs)
