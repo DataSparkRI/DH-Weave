@@ -4,6 +4,7 @@ from weave.models import *
 
 class ClientConfigurationAdmin(admin.ModelAdmin):
     exclude=('object_id',)
+    search_fields = ('name', )
 
 class WeaveHierarchyAdmin(admin.ModelAdmin):
     list_display = ('parent_id', 'child_id')
