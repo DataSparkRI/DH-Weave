@@ -198,7 +198,8 @@
 		{%if editable%}
 		{%else%}
 		<div id="weave-share">
-			<a class="weave-embed-link" href="#" target="">Embed This</a>
+			<a class="weave-embed-link" href="#" target="">Embed This</a><br><br>
+			<a class="weave-make-image-link" href="#" target="">Make Image</a>
 		</div>
 		{%endif%}
 
@@ -245,6 +246,13 @@
 				var eMcode = DHWEAVE.getEmbedCode();
 				DHWEAVE.showEmbedCode(eMcode);
 			});
+			
+			$("a.weave-make-image-link").click(function(e){
+			    var data = weave.evaluateExpression(null, 'getBase64Image(Application.application.visDesktop)', null, ['weave.utils.BitmapUtils', 'mx.core.Application']);
+                    data = "data:image/png;base64,"+data;
+			    document.getElementById("Content").innerHTML = '<a href="javascript:void(0)" onclick="reloadPage();"><img src="'+data+'" alt="Red dot"></a>';
+			});
+			
 		});
 		
 		

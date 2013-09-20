@@ -165,7 +165,8 @@ class ClientConfiguration(models.Model):
 
     def __unicode__(self):
         return "%s" % self.name
-
+    class Meta:
+        ordering = ('name',)
 class CCDataStory(ClientConfiguration):
     class Meta:
         proxy = True
