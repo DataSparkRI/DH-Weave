@@ -140,7 +140,7 @@ class ClientConfiguration(models.Model):
     # as a url to the weave client
     content_file = models.CharField(max_length=100, unique=True, null=True, blank=True)
     content_format = models.CharField(max_length=4, choices=FORMAT_CHOICES, default='file', null=True)
-    #image = models.ImageField(upload_to='weave_images', blank=True, null=True)
+    image = models.ImageField(upload_to='weave_images', blank=True, null=True)
     is_public = models.NullBooleanField(default=False, null=True, blank=True)
 
     def cc_type(self):
