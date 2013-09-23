@@ -130,9 +130,38 @@
 			</p>
 			<p>
 			<script type="text/javascript"> 
+			function message(){
+			    
+			    if(confirm("To view this page ensure that Adobe Flash Player version 10.2.0 or greater is installed.")){
+			        this.document.location.href ='http://www.adobe.com/go/getflashplayer';
+			    }
+			    else{}
+			}
+			function getViz(){
+		        var self = this;
+		        var g = $GET(window.location.search);
+		
+		        if(g.hasOwnProperty('file')){
+		            
+			        if(g.file !== 'default.xml'){
+
+				        return g.file;
+			        }else{
+
+				        return g.cc;
+			        }
+		        }
+		        return 'default.xml'
+	        }
 			var pageHost = ((document.location.protocol == "https:") ? "https://" : "http://"); 
-			document.write("<a href='http://www.adobe.com/go/getflashplayer'><img src='" 
-					+ pageHost + "www.adobe.com/images/shared/download_buttons/get_flash_player.gif' alt='Get Adobe Flash player' /></a>" ); 
+			//document.write("<a href='http://www.adobe.com/go/getflashplayer'><img src='" 
+			//		+ pageHost + "www.adobe.com/images/shared/download_buttons/get_flash_player.gif' alt='Get Adobe Flash player' /></a>"
+			
+			
+			document.write("<a href='#'><img src='" 
+					+ pageHost + "dev.ridatahub.org/media/weave_images/"+getViz().split(".")[0]+".png' alt='Get Adobe Flash player' onclick='message();'/></a>" ); 
+
+
 		    	</script> 
 			</p>
 		   </div>
