@@ -158,14 +158,11 @@
                             //alert("You have the minimum required flash version (or newer)");          
                         }else{
                             document.body.innerHTML= "<a href='#'><img src='" 
-					+ pageHost + "{{weave_allowed_domain}}/media/weave_images/"+getViz().split(".")[0]+".png' height='400' width='700' alt='Get Adobe Flash player' onclick='message();'/></a>"
+					+ pageHost + "{{host}}/media/weave_images/"+getViz().split(".")[0]+".png' height='400' width='700' alt='Get Adobe Flash player' onclick='message();'/></a>"
                         }
 
-			
-			
 			//document.write("<a href='#'><img src='" 
-			//		+ pageHost + "{{weave_allowed_domain}}/media/weave_images/"+getViz().split(".")[0]+".png' height='400' width='700' alt='Get Adobe Flash player' onclick='message();'/></a>" ); 
-
+			//		+ pageHost + "{{host}}/media/weave_images/"+getViz().split(".")[0]+".png' height='400' width='700' alt='Get Adobe Flash player' onclick='message();'/></a>" ); 
 
 		    	</script> 
 		   </div>
@@ -286,8 +283,13 @@
 			
 			$("a.weave-make-image-link").click(function(e){
 			    var data = weave.evaluateExpression(null, 'getBase64Image(Application.application.visDesktop)', null, ['weave.utils.BitmapUtils', 'mx.core.Application']);
+			    if(data=="undefined"){
+			        document.getElementById("Content").innerHTML = '<a href="javascript:void(0)" onclick="reloadPage();"><img src={{host}}/static/image/icons/remove.png alt="Red dot"></a>';
+			    }
+			    else{
                     data = "data:image/png;base64,"+data;
-			    document.getElementById("Content").innerHTML = '<a href="javascript:void(0)" onclick="reloadPage();"><img src="'+data+'" alt="Red dot"></a>';
+			        document.getElementById("Content").innerHTML = '<a href="javascript:void(0)" onclick="reloadPage();"><img src="'+data+'" alt="Red dot"></a>';
+			    }
 			});
 			
 		});
