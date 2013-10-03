@@ -65,7 +65,10 @@ class WeaveFlatPublicMeta(models.Model):
         return d
 
     def __unicode__(self):
-        return self.title
+        if self.title:
+            return self.title
+        else:
+            return "Related to %s" % self.h_e_index
 
 
 class WeaveMetaPublic(WeaveMeta):
