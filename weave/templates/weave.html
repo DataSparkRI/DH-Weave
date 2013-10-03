@@ -128,11 +128,13 @@
 
 			<script type="text/javascript"> 
 			function message(){
-			    
-			    if(confirm("To view this page ensure that Adobe Flash Player version 10.2.0 or greater is installed.")){
-			        this.document.location.href ='http://www.adobe.com/go/getflashplayer';
+			    alert("To view this page ensure that Adobe Flash Player version 10.2.0 or greater is installed.");
+			    if( /iPhone|iPad|iPod/i.test(navigator.userAgent) ) {}
+			    else{
+			        if(confirm("Do you want to link to install page?")){
+			            this.document.location.href ='http://www.adobe.com/go/getflashplayer';
+			        }
 			    }
-			    else{}
 			}
 			function getViz(){
 		        var self = this;
@@ -154,10 +156,15 @@
 			//document.write("<a href='http://www.adobe.com/go/getflashplayer'><img src='" 
 			//		+ pageHost + "www.adobe.com/images/shared/download_buttons/get_flash_player.gif' alt='Get Adobe Flash player' /></a>"
 			
-			
-			document.write("<a href='#'><img src='" 
-					+ pageHost + "dev.ridatahub.org/media/weave_images/"+getViz().split(".")[0]+".png' height='400' width='700' alt='Get Adobe Flash player' onclick='message();'/></a>" ); 
+			if(swfobject.hasFlashPlayerVersion("10.2.0")){
+                            //alert("You have the minimum required flash version (or newer)");          
+                        }else{
+                            document.body.innerHTML= "<a href='#'><img src='" 
+					+ pageHost + "{{host}}/media/weave_images/"+getViz().split(".")[0]+".png' height='400' width='700' alt='Get Adobe Flash player' onclick='message();'/></a>"
+                        }
 
+			//document.write("<a href='#'><img src='" 
+			//		+ pageHost + "{{host}}/media/weave_images/"+getViz().split(".")[0]+".png' height='400' width='700' alt='Get Adobe Flash player' onclick='message();'/></a>" ); 
 
 		    	</script> 
 		   </div>
@@ -278,8 +285,13 @@
 			
 			$("a.weave-make-image-link").click(function(e){
 			    var data = weave.evaluateExpression(null, 'getBase64Image(Application.application.visDesktop)', null, ['weave.utils.BitmapUtils', 'mx.core.Application']);
+			    if(data=="undefined"){
+			        document.getElementById("Content").innerHTML = '<a href="javascript:void(0)" onclick="reloadPage();"><img src={{host}}/static/image/icons/remove.png alt="Red dot"></a>';
+			    }
+			    else{
                     data = "data:image/png;base64,"+data;
-			    document.getElementById("Content").innerHTML = '<a href="javascript:void(0)" onclick="reloadPage();"><img src="'+data+'" alt="Red dot"></a>';
+			        document.getElementById("Content").innerHTML = '<a href="javascript:void(0)" onclick="reloadPage();"><img src="'+data+'" alt="Red dot"></a>';
+			    }
 			});
 			
 		});
