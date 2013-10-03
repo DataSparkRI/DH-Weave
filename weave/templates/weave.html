@@ -129,10 +129,12 @@
 			<script type="text/javascript"> 
 			function message(){
 			    alert("To view this page ensure that Adobe Flash Player version 10.2.0 or greater is installed.");
-			    if(confirm("Do you want to link to install page?")){
-			        this.document.location.href ='http://www.adobe.com/go/getflashplayer';
+			    if( /iPhone|iPad|iPod/i.test(navigator.userAgent) ) {}
+			    else{
+			        if(confirm("Do you want to link to install page?")){
+			            this.document.location.href ='http://www.adobe.com/go/getflashplayer';
+			        }
 			    }
-			    else{}
 			}
 			function getViz(){
 		        var self = this;
