@@ -285,8 +285,10 @@
 			
 			$("a.weave-make-image-link").click(function(e){
 			    var data = weave.evaluateExpression(null, 'getBase64Image(Application.application.visDesktop)', null, ['weave.utils.BitmapUtils', 'mx.core.Application']);
-			    if(data=="undefined"){
-			        document.getElementById("Content").innerHTML = '<a href="javascript:void(0)" onclick="reloadPage();"><img src={{host}}/static/image/icons/remove.png alt="Red dot"></a>';
+			    if(data == null)
+			    var data = weave.evaluateExpression(['CompoundBarChartTool2'], 'getBase64Image(this)', null, ['weave.utils.BitmapUtils']);
+			    if(data==null){
+			        document.getElementById("Content").innerHTML = '<a href="javascript:void(0)" onclick="reloadPage();"><img src=dev.ridatahub.org/static/image/icons/remove.png alt="Red dot"></a>';
 			    }
 			    else{
                     data = "data:image/png;base64,"+data;
