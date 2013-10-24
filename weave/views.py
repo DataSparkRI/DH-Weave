@@ -116,7 +116,7 @@ def embed_weave(request):
     except:
        img = "datastory_images/default-img.jpg"
     
-    if img == None:
+    if img == None or img=="":
        img = "datastory_images/default-img.jpg"
     
     ctx = {}
