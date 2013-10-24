@@ -157,10 +157,10 @@
 			//		+ pageHost + "www.adobe.com/images/shared/download_buttons/get_flash_player.gif' alt='Get Adobe Flash player' /></a>"
 			
 			if(swfobject.hasFlashPlayerVersion("10.2.0")){
-                            //alert("You have the minimum required flash version (or newer)");          
+                            alert("You have the minimum required flash version (or newer)");          
                         }else{
                             document.body.innerHTML= "<a href='#'><img src='" 
-					+ pageHost + "{{host}}/media/weave_images/"+getViz().split(".")[0]+".png' height='400' width='700' alt='Get Adobe Flash player' onclick='message();'/></a>"
+					+ pageHost + "{{host}}{{img}}' height='400' width='700' alt='Get Adobe Flash player' onclick='message();'/></a>"
                         }
 
 			//document.write("<a href='#'><img src='" 

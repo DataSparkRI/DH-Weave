@@ -110,6 +110,15 @@ def embed_weave(request):
         if there is a wf (a weave file on disk) we ignore an client configs what may also be passed to the view.
         Also we check to see where the referer is coming from. If its from datahub then we want to display some extra ui, if not we can display links to datahub.
     """
+    from weave.models import ClientConfiguration
+    try:
+       img = ClientConfiguration.objects.get(content_file=request.GET['file']).image
+    except:
+       img = "/media/datastory_images/default-img.jpg"
+    
+    if img == None:
+       img = "/media/datastory_images/default-img.jpg"
+    
     ctx = {}
     ctx['authenticated'] = request.user.is_authenticated()
     viz = request.GET.get('viz', None)
@@ -138,7 +147,8 @@ def embed_weave(request):
     ctx['ttl'] = title
     ctx['host'] = request.get_host()
     ctx['editable'] = editable
-
+    ctx['img'] = img
+    
     if c_config is not None:
         ctx['client_config'] = c_config
 
