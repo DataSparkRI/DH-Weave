@@ -114,10 +114,10 @@ def embed_weave(request):
     try:
        img = ClientConfiguration.objects.get(content_file=request.GET['file']).image
     except:
-       img = "/media/datastory_images/default-img.jpg"
+       img = "datastory_images/default-img.jpg"
     
     if img == None:
-       img = "/media/datastory_images/default-img.jpg"
+       img = "datastory_images/default-img.jpg"
     
     ctx = {}
     ctx['authenticated'] = request.user.is_authenticated()
