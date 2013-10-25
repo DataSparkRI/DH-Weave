@@ -9,7 +9,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import AnonymousUser
 
 from weave.models import ClientConfiguration
-from weave.util import deprecated
+from weave.util import deprecated, default_json_generator
 import simplejson as json
 import elementtree.ElementTree as ET
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
@@ -146,4 +146,16 @@ def embed_weave(request):
 
 
 
+def weave_datasource(request):
+    ds = request.GET.get('dsname', None)
+    if ds:
+        try:
+            r = json.dumps([d for d in default_json_generator(ds)][0])
+        except Exception as e:
+            print e
+            r = '[]'
+    else:
+        r = '[]'
+
+    return HttpResponse(r, content_type='application/json')
 

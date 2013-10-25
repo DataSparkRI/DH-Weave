@@ -302,6 +302,11 @@ extend(DHWEAVE, {
 			if(p.hasOwnProperty('weave')){
 				clearInterval(window.apiInt);
 				self.Settings.apiready = true;
+                self.DsObj = self.Settings.WObj.path('WeaveDataSource');
+                // set the inital ds state
+                self.Settings.DataSource = self.DsObj.getState().attributeHierarchy.XMLString;
+                self.DsObj.addCallback(DHWEAVE.updateDataSource)
+
 				// alert parent window
 				if(window != top){
 					if(window.parent.DHWEAVE != undefined){
@@ -309,9 +314,59 @@ extend(DHWEAVE, {
 					}
 				}
 			}
-		},1000);
+		}, 1000);
 		
 	},
+    
+    updateDataSource:function(weave){
+        var self = DHWEAVE;
+        //var ds = self.Settings.WObj.path('WeaveDataSource');
+        self.DsObj.removeCallback(DHWEAVE.updateDataSource);
+        var ds = self.DsObj;
+        var xP = new XML.ObjTree(); // xml parser
+        xP.xmlDecl = "";
+        var ogXML = xP.parseXML(self.Settings.DataSource);
+        var ogCats = ogXML.hierarchy.category[0].category;// this gives us DataTable categories and no Geometries;
+        var nXML = ds.getState().attributeHierarchy.XMLString;
+        var upXML = xP.parseXML(nXML);
+        var nCats = upXML.hierarchy.category[0].category;// this gives us DataTable categories and no Geometries;
+        var inactive_cats = [];//categories that have not been fetched
+        var new_active_cats = [];// cats that are being requested
+        // lets inspect the current Datasource and figure out which categories have been fetched already
+        for(var c in ogCats){
+            if(!ogCats[c].hasOwnProperty("attribute")){
+                inactive_cats.push(ogCats[c]['-title']);
+            }
+        }
+
+        // now we have to see what new category is being requested
+        for(var c in nCats){
+            var t = nCats[c]['-title'];
+            if(nCats[c].hasOwnProperty("attribute")){
+                if($.inArray(t, inactive_cats) != -1){
+                   // this cat has previously inactive;
+                   new_active_cats.push(t);
+                    // we update it now in the session state
+                   upXML.hierarchy.category[0].category[c].attribute = [];
+
+                   $.get("/weave/ds", {dsname:t}, function(data){
+                        upXML.hierarchy.category[0].category[c].attribute = data;
+                         // update the session state
+                        var new_state = ds.getState();
+                        new_state.attributeHierarchy.XMLString = xP.writeXML(upXML);
+                        ds.state(new_state);
+                        //self.Settings.DataSource = new_state.attributeHierarchy.XMLString;
+                        self.Settings.DataSource = new_state.attributeHierarchy.XMLString;
+                   });
+
+                   break;
+                }
+            }
+        }
+
+        self.DsObj.addCallback(DHWEAVE.updateDataSource);
+    },
+
 	showEmbedCode:function(htmlStr){
 		try{
 			$.fn
@@ -418,3 +473,5 @@ function $GET(url){
 
     return args;
 }
+
+

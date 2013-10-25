@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from weave.managers import *
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
+import cgi
 
 
 class HubEntityIndex(models.Model):
@@ -63,6 +64,24 @@ class WeaveFlatPublicMeta(models.Model):
                 'dataTable':self.dataTable,
         }
         return d
+
+    def to_ds_dict(self):
+        d = {
+                '-weaveEntityId':  self.weaveEntityId,
+                '-min' : self.min,
+                '-max' : self.max,
+                '-dataType': self.dataType,
+                '-keyType': self.keyType,
+                '-object_id': self.object_id,
+                '-title': self.title,
+                '-name': self.name,
+                '-year': self.year,
+                '-dataTable':self.dataTable,
+        }
+        return d
+
+    def to_xml_attr(self):
+        return u'''<attribute title="{title}" year="{year}" object_id="{id}" dataType="{datatype}" dataTable="{datatable}" keyType="{keytype}" weaveEntityId="{entityid}" name="{name}"/>'''.format(title=cgi.escape(self.title), year=self.year, id=self.object_id, datatype=self.dataType, datatable=self.dataTable, keytype=self.keyType, entityid=self.weaveEntityId, name=cgi.escape(self.name))
 
     def __unicode__(self):
         if self.title:
@@ -158,7 +177,7 @@ class ClientConfiguration(models.Model):
     def save(self, *args, **kwargs):
         from weave.util import unique_slugify
         unique_slugify(self, self.name)
-   
+
         super(ClientConfiguration, self).save(*args, **kwargs)
 
     @property
@@ -172,6 +191,8 @@ class ClientConfiguration(models.Model):
         return "%s" % self.name
     class Meta:
         ordering = ('name',)
+
+
 class CCDataStory(ClientConfiguration):
     class Meta:
         proxy = True

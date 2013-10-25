@@ -2,6 +2,7 @@ import re
 from django.template.defaultfilters import slugify
 import warnings
 from weave.models import *
+import os, json
 
 # http://www.djangosnippets.org/snippets/690/
 def unique_slugify(instance, value, slug_field_name='slug', queryset=None,
@@ -111,8 +112,41 @@ def get_related_items_entity_id(object_id=None,year=None, dataTable=None, name=N
         print obj.entity_id
 
 
+def default_xml_generator(public=True):
 
+    head = u'''<WeaveDataSource name="WeaveDataSource">
+    <attributeHierarchy encoding="xml">
+    <hierarchy name="Weave Data Service">
+    <category title="Data Tables" name="Data Tables">
+    '''
+    yield head
+    w_categories = WeaveFlatPublicMeta.objects.all().only('dataTable').distinct('dataTable')
+    for cat in w_categories:
+        cat_head = u'''<category title="{0}" weaveEntityId="">'''.format(cat.dataTable)
+        yield cat_head
+        #attr_str = u''
+        #for wobj in WeaveFlatPublicMeta.objects.filter(dataTable=cat.dataTable):
+        #    attr_str += wobj.to_xml_attr()
+        #    yield attr_str
+        yield u'''</category>'''
 
+    tail = u'''
+    </category>
+    </hierarchy>
+    </attributeHierarchy>
+    </WeaveDataSource>'''
+    yield tail
 
+def default_json_generator(data_table, public=True):
+    """ Generate a attirbute set for a given data_table"""
+    for wobj in WeaveFlatPublicMeta.objects.filter(dataTable=data_table):
+        yield wobj.to_ds_dict()
 
+def generate_xml_file(public=True, path="/tmp/default.xml"):
+    """ Generate a special default xml for a given user OR a public version with no unpublished indicators in it"""
+    with open(path, "w+") as xml_file:
+        for s in default_json_generator(public):
+            xml_file.write(s.encode("utf8"))
+
+    return "Wrote %s" % path
 
