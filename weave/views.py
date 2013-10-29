@@ -148,9 +148,14 @@ def embed_weave(request):
 
 def weave_datasource(request):
     ds = request.GET.get('dsname', None)
+    if request.user.is_anonymous():
+        user = None
+    else:
+        user = request.user
+
     if ds:
         try:
-            r = json.dumps([d for d in default_json_generator(ds)][0])
+            r = json.dumps([d for d in default_json_generator(ds, user=user)])
         except Exception as e:
             print e
             r = '[]'

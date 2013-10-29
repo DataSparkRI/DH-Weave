@@ -3,6 +3,7 @@ from django.template.defaultfilters import slugify
 import warnings
 from weave.models import *
 import os, json
+from indicators.models import Indicator
 
 # http://www.djangosnippets.org/snippets/690/
 def unique_slugify(instance, value, slug_field_name='slug', queryset=None,
@@ -137,9 +138,11 @@ def default_xml_generator(public=True):
     </WeaveDataSource>'''
     yield tail
 
-def default_json_generator(data_table, public=True):
-    """ Generate a attirbute set for a given data_table"""
-    for wobj in WeaveFlatPublicMeta.objects.filter(dataTable=data_table):
+def default_json_generator(data_table, user):
+    """ Generate a attirbute set for a given data_table and user"""
+    pub_inds = [str(i.id) for i in Indicator.objects.get_for_user(user).only('id')]
+
+    for wobj in WeaveFlatPublicMeta.objects.filter(dataTable=data_table, object_id__in=pub_inds):
         yield wobj.to_ds_dict()
 
 def generate_xml_file(public=True, path="/tmp/default.xml"):

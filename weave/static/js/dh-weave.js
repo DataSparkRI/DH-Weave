@@ -343,11 +343,16 @@ extend(DHWEAVE, {
         for(var c in nCats){
             var t = nCats[c]['-title'];
             if(nCats[c].hasOwnProperty("attribute")){
+
                 if($.inArray(t, inactive_cats) != -1){
                    // this cat has previously inactive;
                    new_active_cats.push(t);
                     // we update it now in the session state
+
                    upXML.hierarchy.category[0].category[c].attribute = [];
+                   var new_state = ds.getState();
+                   new_state.attributeHierarchy.XMLString = xP.writeXML(upXML);
+                   ds.state(new_state);
 
                    $.get("/weave/ds", {dsname:t}, function(data){
                         upXML.hierarchy.category[0].category[c].attribute = data;
@@ -355,7 +360,6 @@ extend(DHWEAVE, {
                         var new_state = ds.getState();
                         new_state.attributeHierarchy.XMLString = xP.writeXML(upXML);
                         ds.state(new_state);
-                        //self.Settings.DataSource = new_state.attributeHierarchy.XMLString;
                         self.Settings.DataSource = new_state.attributeHierarchy.XMLString;
                    });
 
