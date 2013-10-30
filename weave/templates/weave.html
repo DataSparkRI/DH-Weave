@@ -64,8 +64,6 @@
 			{% if dh_refered and editable %}{# TODO: hardcoded accounts url :( #}
 			$.getJSON("/accounts/ilist/list/", function(data){
 
-				DHWEAVE.updateUNPDataSource(data['unp']);
-				
 				if(data.hasOwnProperty('user_ilists')){
 					if(!$.isEmptyObject(data['user_ilists'])){
 						DHWEAVE.updateSessionDataSources('Your iLists', data['user_ilists']);

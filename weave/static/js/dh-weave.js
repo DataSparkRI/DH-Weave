@@ -93,8 +93,7 @@ extend(DHWEAVE, {
 			
 				for(var k in validKeys){
 					if(data[i].className===validKeys[k]){
-						//cleaned_data.push(data[i]);
-						//this keeps us from overwriting existing data sources if the stored client config is old.
+					
 						match ++;
 					}
 				}
@@ -147,89 +146,12 @@ extend(DHWEAVE, {
 		}
 		return state;
 	},
-	updateUNPDataSource:function(uData){
-		var self = this;
-		var ds = DHWEAVE.Settings.WObj.path("WeaveDataSource").getState();
-		var xmlParser = new XML.ObjTree();
-		self.OG_DAH_XML = ds.attributeHierarchy.XMLString;
-		self.OG_DAH = xmlParser.parseXML(ds.attributeHierarchy.XMLString);
-		var cat;
-		var attr;
-		for(var i in self.OG_DAH.hierarchy.category[0].category){
-			cat = self.OG_DAH.hierarchy.category[0].category[i]; // this gives us categories
-			if(cat.hasOwnProperty('attribute')){
-				var attr_index;
-				if(cat.attribute.hasOwnProperty('length')){
-					for(attr_index=0; attr_index< cat.attribute.length; attr_index++){
-						attr = cat.attribute[attr_index];
-						if($.inArray(parseInt(attr["-object_id"]), uData)!= -1){
-							// remove from the list
-							cat.attribute.splice(attr_index, 1);
-							attr_index -=1;
-						}
-					}
-				}
-			}
-		}
-		//update the state
-		var output = xmlParser.writeXML(self.OG_DAH);
-		output = output.replace('<?xml version="1.0" encoding="UTF-8" ?>',"");
-		var newState = {
-			attributeHierarchy : output
-		}
-		DHWEAVE.Settings.WObj.path("WeaveDataSource").state(newState);
 
-	},
 	
 	cleanCategoryTitle:function(text){
 		return text;
 	},
 	
-	updateSessionDataSources:function(category_label, data){
-		/*Update the Weave Datasources from well formated json*/
-		var self = this;
-		var output;
-		output = "<hierarchy>%s</hierarchy>";
-		var dataStr = "";
-		var new_hierarchy = self.Settings.WObj.path().push(category_label).request('WeaveDataSource');
-		var currObj;
-
-		for(var prop in data){
-			dataStr += '<category title="'+self.cleanCategoryTitle(prop)+'">';
-			// now we have to create he nested categories
-			currObj = data[prop];
-			for(var prop in currObj){
-				dataStr += '<category title="'+self.cleanCategoryTitle(prop)+'">'; // this is the dataTable level
-				for(var attr in currObj[prop]){
-					var obj = currObj[prop][attr];
-					
-					dataStr += "<attribute";
-					for(var i in obj){
-						dataStr +=' ' + i + '="' + obj[i] + '"';
-					}
-					dataStr += "/>";
-				
-				}
-				dataStr +="</category>"
-			}
-
-			dataStr +="</category>"
-
-			
-		}
-		
-		output = output.replace("%s", dataStr);
-		output = output.replace(/<(?=\d)/g, "Less Than ");
-		output = output.replace(/>(?=\d)/g, "Greater Than ");
-
-		var newState = {
-			attributeHierarchy : output
-		}
-
-		new_hierarchy.state(newState);
-
-	},
-
 	loadSessionState:function(){
 		var self = this;
 
@@ -259,7 +181,6 @@ extend(DHWEAVE, {
 
 	getUserConfigs:function(callback){
 		var self = this;
-			
 	},
 
 	showMessage:function(mssg){
@@ -283,7 +204,6 @@ extend(DHWEAVE, {
 
 	addCallback:function(callback){
 		var self = this;
-		//var path = self.Settings.WObj.path();
 		var path = self.Settings.WObj.path("CompoundBarChartTool", "children", "visualization", "plotManager", "plotters", "plot", "heightColumns", "DynamicColumn")
 		self.Settings.callbacks.push(callback);
 		path.addCallback(function(weave){
@@ -300,13 +220,13 @@ extend(DHWEAVE, {
 		window.apiInt = setInterval(function(){
 			var p = self.Settings.WObj.path();
 			if(p.hasOwnProperty('weave')){
+
 				clearInterval(window.apiInt);
 				self.Settings.apiready = true;
                 self.DsObj = self.Settings.WObj.path('WeaveDataSource');
                 // set the inital ds state
                 self.Settings.DataSource = self.DsObj.getState().attributeHierarchy.XMLString;
                 self.DsObj.addCallback(DHWEAVE.updateDataSource)
-
 				// alert parent window
 				if(window != top){
 					if(window.parent.DHWEAVE != undefined){
@@ -320,7 +240,6 @@ extend(DHWEAVE, {
     
     updateDataSource:function(weave){
         var self = DHWEAVE;
-        //var ds = self.Settings.WObj.path('WeaveDataSource');
         self.DsObj.removeCallback(DHWEAVE.updateDataSource);
         var ds = self.DsObj;
         var xP = new XML.ObjTree(); // xml parser
@@ -338,7 +257,6 @@ extend(DHWEAVE, {
                 inactive_cats.push(ogCats[c]['-title']);
             }
         }
-
         // now we have to see what new category is being requested
         for(var c in nCats){
             var t = nCats[c]['-title'];
@@ -361,6 +279,8 @@ extend(DHWEAVE, {
                         new_state.attributeHierarchy.XMLString = xP.writeXML(upXML);
                         ds.state(new_state);
                         self.Settings.DataSource = new_state.attributeHierarchy.XMLString;
+                        self.DsObj.addCallback(DHWEAVE.updateDataSource);
+
                    });
 
                    break;
@@ -368,7 +288,6 @@ extend(DHWEAVE, {
             }
         }
 
-        self.DsObj.addCallback(DHWEAVE.updateDataSource);
     },
 
 	showEmbedCode:function(htmlStr){
@@ -403,12 +322,9 @@ extend(DHWEAVE, {
 		$(cb).click(function(e){
 			e.preventDefault();
 			$(".weave-mbox").remove();
-
 		});
 		
 		$('body').append(mbox);
-
-
 
 	}
 		
