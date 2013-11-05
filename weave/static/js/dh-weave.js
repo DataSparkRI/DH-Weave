@@ -79,6 +79,50 @@ extend(DHWEAVE, {
 		/*Update the name of the weave file in the GUI*/
 		$("#weave-file-name").html('<b>Current Weave File:</b> ' + name)
 	},
+    updateSessionDataSources:function(category_label, data){
+        /*Update the Weave Datasources from well formated json*/
+        var self = this;
+        var output;
+        output = "<hierarchy>%s</hierarchy>";
+        var dataStr = "";
+        var new_hierarchy = self.Settings.WObj.path().push(category_label).request('WeaveDataSource');
+        var currObj;
+
+        for(var prop in data){
+                dataStr += '<category title="'+self.cleanCategoryTitle(prop)+'">';
+                // now we have to create he nested categories
+                currObj = data[prop];
+                for(var prop in currObj){
+                        dataStr += '<category title="'+self.cleanCategoryTitle(prop)+'">'; // this is the dataTable level
+                        for(var attr in currObj[prop]){
+                                var obj = currObj[prop][attr];
+                                
+                                dataStr += "<attribute";
+                                for(var i in obj){
+                                        dataStr +=' ' + i + '="' + obj[i] + '"';
+                                }
+                                dataStr += "/>";
+                        
+                        }
+                        dataStr +="</category>"
+                }
+
+                dataStr +="</category>"
+
+                
+        }
+        
+        output = output.replace("%s", dataStr);
+        output = output.replace(/<(?=\d)/g, "Less Than ");
+        output = output.replace(/>(?=\d)/g, "Greater Than ");
+
+        var newState = {
+                attributeHierarchy : output
+        }
+
+        new_hierarchy.state(newState);
+
+    },
 	loadClientConfig:function(id){
 		var self = this;
 		var validKeys = ['weave.data.DataSources::WeaveDataSource']; // This is a list of weave session state objects we dont want to let the saved session state overwrite.
