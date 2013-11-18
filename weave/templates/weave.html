@@ -127,6 +127,18 @@
 		<div id="no-flash">
 
 			<script type="text/javascript"> 
+			function compareSessionStates(SessionState1, SessionState2){
+				if(SessionState1.length != SessionState2.length){
+					return false;
+				}
+				for(var i=0; i<SessionState2.length; i++){
+					if(JSON.stringify(SessionState2[i]) != JSON.stringify(SessionState1[i])){
+						return false;
+					}
+				}
+				return true;
+
+			}
 			function message(){
 			    alert("To view this page ensure that Adobe Flash Player version 10.2.0 or greater is installed.");
 			    if( /iPhone|iPad|iPod/i.test(navigator.userAgent) ) {}
