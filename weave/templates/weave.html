@@ -54,6 +54,7 @@
 	<script type="text/javascript" src="{% static 'js/dh-weave.js' %}"></script>
 	<script type="text/javascript" src="{% static 'javascripts/jquery.atooltip.js' %}"></script>
 	<script type="text/javascript" src="{% static 'js/ObjTree.js' %}"></script>	
+	{{ analytics_tracking_code|safe }}
 	<script type="text/javascript">
 		var weaveReady = function(myWeave) {
 			DHWEAVE.setWeaveObj(myWeave);
