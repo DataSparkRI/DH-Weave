@@ -56,6 +56,28 @@
 	<script type="text/javascript" src="{% static 'js/ObjTree.js' %}"></script>	
 	{{ analytics_tracking_code|safe }}
 	<script type="text/javascript">
+	{% ifequal analytics_tracking_code None %}
+            {% else %}
+		var old;
+		function object_event_listner(e){
+			var weave = document.getElementById('weave');
+			if(old == undefined){
+				this.old = weave.path().getState();
+				return true;
+			}
+			else{
+				newS = weave.path().getState();
+				if(compareSessionStates(this.old, newS)){
+					return false;
+				}
+				else{
+					this.old = newS;
+					return true;
+				}
+
+			}
+		}
+		{% endifequal %}
 		var weaveReady = function(myWeave) {
 			DHWEAVE.setWeaveObj(myWeave);
 			DHWEAVE.Settings.baseUrl = "http://{{host}}/";
