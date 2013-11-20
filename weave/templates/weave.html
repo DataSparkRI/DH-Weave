@@ -79,7 +79,15 @@
 			});
 			{% endif %}
 			var weave = document.getElementById('weave');
-
+            {% ifequal analytics_tracking_code None %}
+            {% else %}            weave.addEventListener('mousedown', function(e) {
+				result = object_event_listner(e);
+				if (result){
+					console.log("Change: Add to action");
+					ga('send', 'event', 'page', 'click', e.target.baseURI);
+				}
+			},false);
+            {% endifequal %}
 			DHWEAVE.getAPIReady();
 
 		}
