@@ -330,9 +330,13 @@
 			        data = weave.evaluateExpression(['CompoundBarChartTool2'], 'getBase64Image(this)', null, ['weave.utils.BitmapUtils']);
 			    if(data == null)
 			        data = weave.evaluateExpression(['ScatterPlotTool'], 'getBase64Image(this)', null, ['weave.utils.BitmapUtils']);
+
+                if(data == null)
+			        data = weave.evaluateExpression(['MapTool'], 'getBase64Image(this)', null, ['weave.utils.BitmapUtils']);
+			        
 			    if(data==null){
-			        document.getElementById("Content").innerHTML = '<a href="javascript:void(0)" onclick="reloadPage();"><img src=dev.ridatahub.org/static/image/icons/remove.png alt="Red dot"></a>';
-			    }
+			        document.getElementById("Content").innerHTML = '<a href="javascript:void(0)" onclick="reloadPage();"><img src="http://dev.ridatahub.org/static/images/icons/remove.png" alt="Red dot"></a>';
+
 			    else{
                     data = "data:image/png;base64,"+data;
 			        document.getElementById("Content").innerHTML = '<a href="javascript:void(0)" onclick="reloadPage();"><img src="'+data+'" alt="Red dot"></a>';
