@@ -331,9 +331,20 @@
 			    if(data == null)
 			        data = weave.evaluateExpression(['ScatterPlotTool'], 'getBase64Image(this)', null, ['weave.utils.BitmapUtils']);
 
-                if(data == null)
+			    if(data == null){
 			        data = weave.evaluateExpression(['MapTool'], 'getBase64Image(this)', null, ['weave.utils.BitmapUtils']);
-			        
+			        customTool = weave.evaluateExpression(['ColorBinLegendTool'], 'getBase64Image(this)', null, ['weave.utils.BitmapUtils']);
+			        AttributeMenuTool = weave.evaluateExpression(['AttributeMenuTool'], 'getBase64Image(this)', null, ['weave.utils.BitmapUtils']);
+			        TimeSliderTool = weave.evaluateExpression(['TimeSliderTool'], 'getBase64Image(this)', null, ['weave.utils.BitmapUtils']);
+			        if(data != null && customTool!= null && AttributeMenuTool!= null&& TimeSliderTool!= null){
+			        	data = "data:image/png;base64,"+data;
+			        	customTool = "data:image/png;base64,"+customTool;
+			        	AttributeMenuTool= "data:image/png;base64,"+AttributeMenuTool;
+			        	TimeSliderTool= "data:image/png;base64,"+TimeSliderTool;
+				        document.getElementById("Content").innerHTML = '<a href="javascript:void(0)" onclick="reloadPage();"><img src="'+AttributeMenuTool+'" alt="Red dot"><img src="'+customTool+'" alt="Red dot"><br><img src="'+data+'" alt="Red dot"><br><img src="'+TimeSliderTool+'" alt="Red dot"></a>';
+				        return 1;
+			    	}
+			    } 
 			    if(data==null){
 			        document.getElementById("Content").innerHTML = '<a href="javascript:void(0)" onclick="reloadPage();"><img src="http://dev.ridatahub.org/static/images/icons/remove.png" alt="Red dot"></a>';
                 }
