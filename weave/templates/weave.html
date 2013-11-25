@@ -336,7 +336,7 @@
 			        
 			    if(data==null){
 			        document.getElementById("Content").innerHTML = '<a href="javascript:void(0)" onclick="reloadPage();"><img src="http://dev.ridatahub.org/static/images/icons/remove.png" alt="Red dot"></a>';
-
+                }
 			    else{
                     data = "data:image/png;base64,"+data;
 			        document.getElementById("Content").innerHTML = '<a href="javascript:void(0)" onclick="reloadPage();"><img src="'+data+'" alt="Red dot"></a>';
