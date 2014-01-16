@@ -106,7 +106,8 @@
 				result = object_event_listner(e);
 				if (result){
 					console.log("Change: Add to action");
-					ga('send', 'event', 'page', 'click', e.target.baseURI);
+                                        _gaq.push(['_trackEvent', 'weave', 'click', e.target.baseURI]);
+					//ga('send', 'event', 'page', 'click', e.target.baseURI);
 				}
 			},false);
             {% endifequal %}
