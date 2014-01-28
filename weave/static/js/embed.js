@@ -35,7 +35,9 @@ extend(DHWEAVE, {
 		iF.src = "http://" + DHW_HOST+ "/weave/embed?"+ VIZ + "&ref="  +ref + "&e=" + DHW_EDITABLE;
 		iF.style.border = "none";
 		var targ = document.getElementById(DHW_ID);
-		targ.appendChild(iF);
+		try{
+                targ.appendChild(iF);
+                }catch(err){}
 		DHWEAVE.container = iF;
 		DHWEAVE.ogURL = iF.src;
 	},
