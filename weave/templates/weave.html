@@ -56,7 +56,8 @@
 	<script type="text/javascript" src="{% static 'js/ObjTree.js' %}"></script>	
 	{{ analytics_tracking_code|safe }}
 	<script type="text/javascript">
-	{% ifequal analytics_tracking_code None %}
+{% comment %}
+        {% ifequal analytics_tracking_code None %}
             {% else %}
 		var old;
 		function object_event_listner(e){
@@ -78,6 +79,8 @@
 			}
 		}
 		{% endifequal %}
+
+{% endcomment %}
 		var weaveReady = function(myWeave) {
 			DHWEAVE.setWeaveObj(myWeave);
 			DHWEAVE.Settings.baseUrl = "http://{{host}}/";
@@ -101,6 +104,7 @@
 			});
 			{% endif %}
 			var weave = document.getElementById('weave');
+{% comment %}
             {% ifequal analytics_tracking_code None %}
             {% else %}            weave.addEventListener('mousedown', function(e) {
 				result = object_event_listner(e);
@@ -111,6 +115,7 @@
 				}
 			},false);
             {% endifequal %}
+{% endcomment %}
 			DHWEAVE.getAPIReady();
 
 		}
