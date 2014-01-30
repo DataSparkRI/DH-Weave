@@ -174,7 +174,9 @@ extend(DHWEAVE, {
 	setWeaveObj:function(weaveObj){
 		var self = this;
 		self.Settings.WObj = weaveObj;
-
+		//self.Settings.WObj.path('WeaveDataSource', 'idFields').state(['title', 'name','object_id', 'keyType', 'year']);
+                self.Settings.WObj.path('WeaveDataSource','idFields').state(['dataTable','object_id','year']);
+                
 	},
 	
 	getSessionDataSources:function(){
