@@ -3,6 +3,18 @@
 <html> 
     <head>
         <title>weave</title>
+        
+            <script type="text/javascript" src="http://docs.sencha.com/extjs/4.2.1/extjs-build/examples/shared/include-ext.js"></script>
+
+
+    <link rel="stylesheet" type="text/css" href="http://docs.sencha.com/extjs/4.2.1/extjs-build/examples/shared/example.css" />
+    <script type="text/javascript" src="http://docs.sencha.com/extjs/4.2.1/extjs-build/examples/shared/examples.js"></script>
+    <script type="text/javascript" src="http://docs.sencha.com/extjs/4.2.1/extjs-build/examples/shared/states.js"></script>
+<script  type="text/javascript" charset="utf-8">
+    {%include "weave_menus.js" with weave_files=data_files weave_host=weave_host%}
+</script>
+      
+        
         <style type="text/css" media="screen"> 
             	html, body  { height:100%; }
 		body { 
@@ -119,7 +131,7 @@
 			DHWEAVE.getAPIReady();
 
 		}
-		var fHeight = 0;
+		var fHeight = 40;
 		var weaveToolsHeight = 78;
 		var swfVersionStr = "10.2.0";
 		var xiSwfUrlStr = "{{weave_root}}playerProductInstall.swf";
@@ -138,8 +150,6 @@
 		attributes.id = "weave";
 		attributes.name = "weave";
 		attributes.align = "middle";
-		
-		
 		{%if editable and dh_refered%}
 		swfobject.embedSWF("{{weave_root}}weave.swf", "flashContent",
 				"100%", window.innerHeight-weaveToolsHeight, 
@@ -160,6 +170,7 @@
 	{%if ttl%}
 		<h1 class="title">{{ttl}}</h1>
 	{%endif%}
+	<div id="toolbar">
 	<div id ="Content">
 	<div id="flashContent">
 		<div id="no-flash">
@@ -287,6 +298,7 @@
 			<a class="weave-make-image-link" href="#" target="">Make Image</a>
 		</div>
 		{%endif%}
+    </div>
     </div>
 	</body>
 	<script type="text/javascript" charset="utf-8">

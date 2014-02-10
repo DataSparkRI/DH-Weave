@@ -133,6 +133,7 @@ def embed_weave(request):
 
     c_config = request.GET.get('cc', None)
     referer = request.GET.get('ref', None)
+    indicator_report_id = request.GET.get('indicatorReport_id', None)
 
     if referer == settings.DATAHUB_HOST:
         dh_refered = True
@@ -149,8 +150,17 @@ def embed_weave(request):
     ctx['editable'] = editable
     ctx['img'] = img
     
+    if indicator_report_id != None:
+        from datamart.models import IndicatorReport
+        obj = IndicatorReport.objects.get(id=indicator_report_id)
+        ctx['data_files']=obj.client_configurations.all()
+        
+    
     if c_config is not None:
         ctx['client_config'] = c_config
+
+    if indicator_report_id != None:
+            return render_to_response('weave_data.html', ctx, context_instance=RequestContext(request))
 
     return render_to_response('weave.html', ctx, context_instance=RequestContext(request))
 

@@ -3,5 +3,8 @@
 	var DHW_ID ='{{ weave_container|default:'weave-container'}}';
 	var DHW_VIZ = '{{ weave_file|default:'default.xml' }}';
 	var DHW_EDITABLE = '{{ weave_is_editable|default:'true'}}';
+	{% if client_config.1.content_file %}var DHW_REPORT_ID = {{ indicator_report.id}};
+	{% endif %}  
+	
 </script>
 <script src="{{STATIC_URL}}js/embed.js"></script>
