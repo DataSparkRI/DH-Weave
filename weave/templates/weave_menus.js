@@ -252,7 +252,7 @@ Ext.onReady(function(){
         listeners: {
             'select': function(t){
                  years.removeAll();
-                 setup('/media/data_filter_files/'+t.value);
+                 setup('/admin/hierarchy_tool/proxy/url={{weave_root}}'+t.value);
             }
         }
     });
