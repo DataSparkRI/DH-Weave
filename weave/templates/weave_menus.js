@@ -43,6 +43,7 @@ function onItemCheck(item, checked){
             try
              {window.parent.update_info(item.object_id);}
             catch(err){console.log(err)}
+            
         }
         else{
               weave.setSessionState(this.heightColumnsPath);
