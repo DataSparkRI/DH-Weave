@@ -154,7 +154,14 @@ function setup(url){
 
                                         text: record.get('year'),
                                         id: record.get('year'),
-                                        menu: {}
+                                        menu: {style : {
+                                        
+                                         width: 400, height: 300,
+                                                        width: '50%',
+                                                        marginBottom: '10px',
+                                                        'text-align'       : 'left'
+                                            
+                                                    }}
                                  });
                         }
                         var each_year = Ext.getCmp(record.get('year'));
@@ -164,6 +171,7 @@ function setup(url){
                             each_year.menu.add({
                                 text: record.get('name'),
                                 value: record.get('object_id'),
+                                tooltip: record.get('title'),
                                 name:record.get('name'),
                                 keyType:record.get('keyType'),
                                 content_type_id: record.get('content_type_id'),
@@ -224,7 +232,7 @@ var category_menu = new Ext.data.Store({
 
 Ext.onReady(function(){
 
-
+   Ext.QuickTips.init();
 
 
 
