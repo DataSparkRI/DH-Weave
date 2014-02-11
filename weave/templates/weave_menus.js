@@ -38,8 +38,11 @@ function onItemCheck(item, checked){
         var weave = document.getElementById('weave');
 
         if(checked){
-            item = makeItem('<hierarchy><category name="Data Tables" title="Data Tables"><category name="'+item.keyType+'" title="'+item.keyType+'"><attribute keyType="'+item.keyType+'" content_type_id="'+item.content_type_id+'" title="'+item.title+'" object_id="'+item.object_id+'" name="'+item.name+'" dataType="'+item.dataType+'" dataTable="'+item.dataTable+'" year="'+item.year+'" id="'+item.id+'" /></category></category></hierarchy>');
-            weave.setSessionState(this.heightColumnsPath, item);
+            items = makeItem('<hierarchy><category name="Data Tables" title="Data Tables"><category name="'+item.keyType+'" title="'+item.keyType+'"><attribute keyType="'+item.keyType+'" content_type_id="'+item.content_type_id+'" title="'+item.title+'" object_id="'+item.object_id+'" name="'+item.name+'" dataType="'+item.dataType+'" dataTable="'+item.dataTable+'" year="'+item.year+'" id="'+item.id+'" /></category></category></hierarchy>');
+            weave.setSessionState(this.heightColumnsPath, items);
+            try
+             {window.parent.update_info(item.object_id);}
+            catch(err){console.log(err)}
         }
         else{
               weave.setSessionState(this.heightColumnsPath);
