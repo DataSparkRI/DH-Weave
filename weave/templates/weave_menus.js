@@ -158,7 +158,7 @@ function setup(url){
                             
                             if(topic_obj[record.get('name')]){
                             each_year.menu.add({
-                                text: record.get('title'),
+                                text: record.get('name'),
                                 value: record.get('object_id'),
                                 name:record.get('name'),
                                 keyType:record.get('keyType'),
@@ -260,7 +260,7 @@ Ext.onReady(function(){
  
     tb.add({
                 text:'Terms',
-                iconCls: 'bmenu',  // <-- icon
+                //iconCls: 'bmenu',  // <-- icon
                 menu: years  // assign menu by instance
             });    
     tb.add(combo);

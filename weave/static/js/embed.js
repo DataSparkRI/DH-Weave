@@ -22,7 +22,7 @@ extend(DHWEAVE, {
 		if(typeof DHW_VIZ === "undefined") throw new Error("DHW_VIZ needs to be defined");
 		if(typeof DHW_EDITABLE ==="undefined") DHW_EDITABLE = "false";
         if(typeof DHW_REPORT_ID ==="undefined") DHW_REPORT_ID = "None";
-        console.log(DHW_REPORT_ID);
+
 
 		if(DHW_VIZ.indexOf(".xml") !== -1  || DHW_VIZ.indexOf(".weave") !== -1) {
 			VIZ = "file=" + DHW_VIZ;
@@ -34,7 +34,10 @@ extend(DHWEAVE, {
 		iF.height = "100%";
 		iF.width = "100%";
 		iF.scrolling="no";
-		iF.src = "http://" + DHW_HOST+ "/weave/embed?"+ VIZ + "&ref="  +ref + "&e=" + DHW_EDITABLE + "&indicatorReport_id=" + DHW_REPORT_ID;
+		if (DHW_REPORT_ID == "None")
+		    iF.src = "http://" + DHW_HOST+ "/weave/embed?"+ VIZ + "&ref="  +ref + "&e=" + DHW_EDITABLE;
+		else
+		    iF.src = "http://" + DHW_HOST+ "/weave/embed?"+ VIZ + "&ref="  +ref + "&e=" + DHW_EDITABLE + "&indicatorReport_id=" + DHW_REPORT_ID;
 		iF.style.border = "none";
 		var targ = document.getElementById(DHW_ID);
 		try{
