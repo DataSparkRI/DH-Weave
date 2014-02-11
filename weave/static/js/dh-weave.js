@@ -251,10 +251,7 @@ extend(DHWEAVE, {
 	addCallback:function(callback){
 		var self = this;
 		var path = self.Settings.WObj.path("CompoundBarChartTool", "children", "visualization", "plotManager", "plotters", "plot", "heightColumns", "DynamicColumn")
-		if ( weave.path("CompoundBarChartTool", "children", "visualization", "plotManager", "plotters", "plot", "heightColumns", "DynamicColumn").getState() == null){
-		    var strName = weave.path("CompoundBarChartTool", "children", "visualization", "plotManager", "plotters", "plot", "heightColumns").getNames()[0];
-		    var path = self.Settings.WObj.path("CompoundBarChartTool", "children", "visualization", "plotManager", "plotters", "plot", "heightColumns", strName);
-		}
+		
 		
 		self.Settings.callbacks.push(callback);
 		path.addCallback(function(weave){
