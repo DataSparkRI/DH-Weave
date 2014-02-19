@@ -88,7 +88,7 @@ function onItemCheck(item, checked){
 
         
         if(checked){
-
+        var object_id = item.object_id;
         
         XMLDoc_attribute.setAttribute("year", item.year);
         XMLDoc_attribute.setAttribute("keyType", item.keyType);
@@ -103,6 +103,11 @@ function onItemCheck(item, checked){
             item = makeItem('<hierarchy><category name="Data Tables" title="Data Tables"><category name="'+item.keyType+'" title="'+item.keyType+'">'+getXmlString(XMLDoc_attribute)+'</category></category></hierarchy>');
             
             weave.setSessionState(this.heightColumnsPath, item);
+            
+            try{window.parent.update_info(object_id);}
+            catch(err){console.log(err);}
+            
+            
         }
         else{
               weave.setSessionState(this.heightColumnsPath);
