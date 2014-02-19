@@ -8,6 +8,8 @@ Ext.require([
 
 heightColumnsPath = ['CompoundBarChartTool','children','visualization','plotManager','plotters','plot','heightColumns'];
 
+
+
 function makeItem(hPath){
     var item = [{
                 className: "weave.data.AttributeColumns::DynamicColumn",
@@ -86,8 +88,8 @@ function onItemCheck(item, checked){
 
         
         if(checked){
-        var object_id = item.object_id;
 
+        
         XMLDoc_attribute.setAttribute("year", item.year);
         XMLDoc_attribute.setAttribute("keyType", item.keyType);
         XMLDoc_attribute.setAttribute("content_type_id", item.content_type_id);
@@ -98,16 +100,13 @@ function onItemCheck(item, checked){
         XMLDoc_attribute.setAttribute("id", item.id);
         
         
-        item = makeItem('<hierarchy><category name="Data Tables" title="Data Tables"><category name="'+item.keyType+'" title="'+item.keyType+'">'+getXmlString(XMLDoc_attribute)+'</category></category></hierarchy>');
+            item = makeItem('<hierarchy><category name="Data Tables" title="Data Tables"><category name="'+item.keyType+'" title="'+item.keyType+'">'+getXmlString(XMLDoc_attribute)+'</category></category></hierarchy>');
             
-        weave.setSessionState(this.heightColumnsPath, item);
-        try{window.parent.update_info(object_id);}
-        catch(err){console.log(err);}
+            weave.setSessionState(this.heightColumnsPath, item);
         }
         else{
               weave.setSessionState(this.heightColumnsPath);
         }
-        //Ext.example.msg('Item Check', 'You {1} the "{0}" menu item.', item.text, checked ? 'checked' : 'unchecked');
 }
 
 Ext.define('data_attribute', {
@@ -327,7 +326,7 @@ Ext.onReady(function(){
         selectOnFocus: true,
         forceSelection: true,
         triggerAction: 'all',
-        listConfig: {maxHeight: 800, minWidth:500},
+        listConfig: {maxHeight: 100, minWidth:500},
         
 
         
@@ -342,6 +341,8 @@ Ext.onReady(function(){
                     item = search_attribute(t.value, currentYear());
                     console.log(item);
                     onItemCheck(item, true);
+                    combo_category.setValue('');
+                    combo.setValue('');
 
             }
         }
@@ -361,7 +362,7 @@ Ext.onReady(function(){
         typeAhead: true,
         mode: 'local',
         triggerAction: 'all',
-        emptyText:'Topic',
+        emptyText:'Select a category',
         editable: false,
         width:300,
         listeners: {
