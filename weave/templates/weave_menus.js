@@ -32,18 +32,75 @@ function makeItem(hPath){
     return item;
 }
 
+function getCurrentXMLString(){
+    var current_path = []
+    for(var i=0; i<heightColumnsPath.length; i++){
+        current_path.push(heightColumnsPath[i]);
+    }
+    
+    var condition = true;
+    do{
+        try{
+            if (weave.path(current_path).getState().hierarchyPath === undefined){
+                current_path.push(weave.path(current_path).getNames()[0]);
+            }
+            else {
+                condition = false;
+            }
+            console.log(current_path);
+         }
+         catch(err){ return '<hierarchy><category name="Data Tables" title="Data Tables"><category name="Postsecondary Institution" title="Postsecondary Institution"><attribute content_type_id="" year="" keyType="" name="" title="" max="100" dataTable="" object_id="" id="" dataType=""/></category></category></hierarchy>';
+         }
+    }
+    while (condition);
+    return weave.path(current_path).getState().hierarchyPath.XMLString;
+}
+
+
+function currentYear(){
+   
+    return StringtoXML(getCurrentXMLString()).getElementsByTagName("attribute")[0].getAttribute("year");
+}
+function StringtoXML(text){
+                if (window.ActiveXObject){
+                  var doc=new ActiveXObject('Microsoft.XMLDOM');
+                  doc.async='false';
+                  doc.loadXML(text);
+                } else {
+                  var parser=new DOMParser();
+                  var doc=parser.parseFromString(text,'text/xml');
+                }
+                return doc;
+}
+
+function getXmlString(xml) {
+  if (window.ActiveXObject) { return xml.xml; }
+  return new XMLSerializer().serializeToString(xml);
+}
 
 
 function onItemCheck(item, checked){
         var weave = document.getElementById('weave');
+        XMLDoc = StringtoXML(getCurrentXMLString());
+        XMLDoc_attribute = XMLDoc.getElementsByTagName("attribute")[0];
 
+        
         if(checked){
-            items = makeItem('<hierarchy><category name="Data Tables" title="Data Tables"><category name="'+item.keyType+'" title="'+item.keyType+'"><attribute keyType="'+item.keyType+'" content_type_id="'+item.content_type_id+'" title="'+item.title+'" object_id="'+item.object_id+'" name="'+item.name+'" dataType="'+item.dataType+'" dataTable="'+item.dataTable+'" year="'+item.year+'" id="'+item.id+'" /></category></category></hierarchy>');
-            weave.setSessionState(this.heightColumnsPath, items);
-            try
-             {window.parent.update_info(item.object_id);}
-            catch(err){console.log(err)}
+
+        
+        XMLDoc_attribute.setAttribute("year", item.year);
+        XMLDoc_attribute.setAttribute("keyType", item.keyType);
+        XMLDoc_attribute.setAttribute("content_type_id", item.content_type_id);
+        XMLDoc_attribute.setAttribute("object_id", item.object_id);
+        XMLDoc_attribute.setAttribute("name", item.name);
+        XMLDoc_attribute.setAttribute("dataType", item.dataType);
+        XMLDoc_attribute.setAttribute("dataTable", item.dataTable);
+        XMLDoc_attribute.setAttribute("id", item.id);
+        
+        
+            item = makeItem('<hierarchy><category name="Data Tables" title="Data Tables"><category name="'+item.keyType+'" title="'+item.keyType+'">'+getXmlString(XMLDoc_attribute)+'</category></category></hierarchy>');
             
+            weave.setSessionState(this.heightColumnsPath, item);
         }
         else{
               weave.setSessionState(this.heightColumnsPath);
@@ -79,13 +136,18 @@ Ext.define('data_category', {
              {name: 'id', mapping: '@id', type: 'string'},
              ],
 });
-var years = Ext.create('Ext.menu.Menu', {
-        id: 'mainMenu',
-        style: {
-            overflow: 'visible'     // For the Combo popup
-        },
-        items: [],
-});
+var list_attributes = [];
+
+function search_attribute(object_id, year){
+    for(var i =0; i<list_attributes.length; i++){
+        if((list_attributes[i].year==year)&&(list_attributes[i].object_id==object_id)){
+            return list_attributes[i];
+        }
+     }
+    return false;
+
+
+}
 
 function setup(url){
         
@@ -142,8 +204,22 @@ function setup(url){
                     // delete the filtered out records
                     delete store.snapshot;
                     
+                    
+                    
                     var hits = {};
                     store.filterBy(function(record) {
+                          tmp_attribute=new Object();
+                                tmp_attribute.name=record.get('name');
+                                tmp_attribute.keyType=record.get('keyType');
+                                tmp_attribute.content_type_id= record.get('content_type_id');
+                                tmp_attribute.title=record.get('title');
+                                tmp_attribute.object_id=record.get('object_id');
+                                tmp_attribute.dataType=record.get('dataType');
+                                tmp_attribute.year=record.get('year');
+                                tmp_attribute.id=record.get('id');
+                                tmp_attribute.dataTable=record.get('dataTable');
+                            list_attributes.push(tmp_attribute);                    
+                    /*
                         var year = record.get('year');
                         if (hits[year]) {
 
@@ -154,14 +230,7 @@ function setup(url){
 
                                         text: record.get('year'),
                                         id: record.get('year'),
-                                        menu: {style : {
-                                        
-                                         width: 400, height: 300,
-                                                        width: '50%',
-                                                        marginBottom: '10px',
-                                                        'text-align'       : 'left'
-                                            
-                                                    }}
+                                        menu: {}
                                  });
                         }
                         var each_year = Ext.getCmp(record.get('year'));
@@ -169,9 +238,8 @@ function setup(url){
                             
                             if(topic_obj[record.get('name')]){
                             each_year.menu.add({
-                                text: record.get('name'),
+                                text: record.get('title'),
                                 value: record.get('object_id'),
-                                tooltip: record.get('title'),
                                 name:record.get('name'),
                                 keyType:record.get('keyType'),
                                 content_type_id: record.get('content_type_id'),
@@ -186,6 +254,7 @@ function setup(url){
                                 checkHandler: onItemCheck
                             
                             });
+                            
                             //console.log("add");
 
                             }
@@ -193,7 +262,7 @@ function setup(url){
                         catch (err){//these are not attribute
                            console.log("find");
                         }
-
+*/
                     });
 
 
@@ -214,13 +283,18 @@ function setup(url){
 }
 setup('/admin/hierarchy_tool/proxy/url={{weave_root}}{{weave_files.0.content_file}}');
 
-/*
+Ext.define('data_year', {
+    extend: 'Ext.data.Model',
+    fields: [{name:'labelsLinkableString',mapping:'labelsLinkableString',type:'string'}],
+});
+
+
 var category_menu = new Ext.data.Store({
     model: 'data_category',
     autoLoad: true,
     proxy: {
         type: 'ajax',
-        url : '/media/data_filter_files/ohe_only_report4_biog.xml',
+        url : '/admin/hierarchy_tool/proxy/url={{weave_root}}{{weave_files.0.content_file}}',
         reader: {
             type: 'xml',
             record: 'attribute',
@@ -228,7 +302,6 @@ var category_menu = new Ext.data.Store({
         }
     }
 });
-*/
 
 Ext.onReady(function(){
 
@@ -242,7 +315,35 @@ Ext.onReady(function(){
     tb.suspendLayouts();
 
 
+   var combo_category = new Ext.form.ComboBox({
+        store: category_menu,
+        displayField: 'name',
+        emptyText:'Select an Indicator',
+        valueField: 'object_id',
+        tpl: '<tpl for="."><div class="x-boundlist-item" >{name}{freq}</div></tpl>',
 
+        selectOnFocus: true,
+        forceSelection: true,
+        triggerAction: 'all',
+        listConfig: {maxHeight: 800, minWidth:500},
+        
+
+        
+        typeAhead: true,
+        mode: 'local',
+        triggerAction: 'all',
+        
+        editable: false,
+        
+        listeners: {
+            'select': function(t){
+                    item = search_attribute(t.value, currentYear());
+                    console.log(item);
+                    onItemCheck(item, true);
+
+            }
+        }
+    });
    
    
    var combo = Ext.create('Ext.form.field.ComboBox', {
@@ -263,20 +364,33 @@ Ext.onReady(function(){
         width:300,
         listeners: {
             'select': function(t){
-                 years.removeAll();
-                 setup('/admin/hierarchy_tool/proxy/url={{weave_root}}'+t.value);
+                var category_menu = new Ext.data.Store({
+                    model: 'data_category',
+                    autoLoad: true,
+                    proxy: {
+                        type: 'ajax',
+                        url : '/admin/hierarchy_tool/proxy/url={{weave_root}}/'+t.value,
+                        reader: {
+                            type: 'xml',
+                            record: 'attribute',
+                            root: 'AttributeMenuTool',
+                        }
+                    }
+                });
+                combo_category.setValue('');
+                combo_category.bindStore( category_menu );
+
+
+
+                 //years.removeAll();
+                 setup('/admin/hierarchy_tool/proxy/url={{weave_root}}/'+t.value);
             }
         }
     });
 
  
-    tb.add({
-                text:'Terms',
-                //iconCls: 'bmenu',  // <-- icon
-                menu: years  // assign menu by instance
-            });    
     tb.add(combo);
-
+    tb.add(combo_category);
     tb.resumeLayouts(true);
 });
 
