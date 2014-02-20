@@ -7,7 +7,7 @@ Ext.require([
 ]);
 
 heightColumnsPath = ['CompoundBarChartTool','children','visualization','plotManager','plotters','plot','heightColumns'];
-
+heightMaxPath = ["CompoundBarChartTool","children", "visualization","plotManager","overrideYMax"]
 
 
 function makeItem(hPath){
@@ -51,7 +51,7 @@ function getCurrentXMLString(){
             }
             console.log(current_path);
          }
-         catch(err){ return '<hierarchy><category name="Data Tables" title="Data Tables"><category name="Postsecondary Institution" title="Postsecondary Institution"><attribute content_type_id="" year="" keyType="" name="" title="" max="100" dataTable="" object_id="" id="" dataType=""/></category></category></hierarchy>';
+         catch(err){ return '<hierarchy><category name="Data Tables" title="Data Tables"><category name="Postsecondary Institution" title="Postsecondary Institution"><attribute content_type_id="" year="" keyType="" name="" title="" dataTable="" object_id="" id="" dataType=""/></category></category></hierarchy>';
          }
     }
     while (condition);
@@ -99,6 +99,14 @@ function onItemCheck(item, checked){
         XMLDoc_attribute.setAttribute("dataTable", item.dataTable);
         XMLDoc_attribute.setAttribute("id", item.id);
         
+        if (item.object_id =="3466"||item.object_id =="3468"||item.object_id =="3467"){
+            XMLDoc_attribute.setAttribute("max", 600);
+            weave.setSessionState(heightMaxPath, 600);
+        }
+        else{
+            XMLDoc_attribute.setAttribute("max", 100);
+            weave.setSessionState(heightMaxPath, 100);
+        }
         
             item = makeItem('<hierarchy><category name="Data Tables" title="Data Tables"><category name="'+item.keyType+'" title="'+item.keyType+'">'+getXmlString(XMLDoc_attribute)+'</category></category></hierarchy>');
             
