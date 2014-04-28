@@ -295,7 +295,7 @@ function setup(url){
     
 
 }
-setup('/admin/hierarchy_tool/proxy/url={{weave_root}}{{weave_files.0.content_file}}');
+setup('/admin/proxy/url={{weave_root}}{{weave_files.0.content_file}}');
 
 Ext.define('data_year', {
     extend: 'Ext.data.Model',
@@ -308,7 +308,7 @@ var category_menu = new Ext.data.Store({
     autoLoad: true,
     proxy: {
         type: 'ajax',
-        url : '/admin/hierarchy_tool/proxy/url={{weave_root}}{{weave_files.0.content_file}}',
+        url : '/admin/proxy/url={{weave_root}}{{weave_files.0.content_file}}',
         reader: {
             type: 'xml',
             record: 'attribute',
@@ -385,7 +385,7 @@ Ext.onReady(function(){
                     autoLoad: true,
                     proxy: {
                         type: 'ajax',
-                        url : '/admin/hierarchy_tool/proxy/url={{weave_root}}/'+t.value,
+                        url : '/admin/proxy/url={{weave_root}}/'+t.value,
                         reader: {
                             type: 'xml',
                             record: 'attribute',
@@ -399,7 +399,7 @@ Ext.onReady(function(){
 
 
                  //years.removeAll();
-                 setup('/admin/hierarchy_tool/proxy/url={{weave_root}}/'+t.value);
+                 setup('/admin/proxy/url={{weave_root}}/'+t.value);
             }
         }
     });
