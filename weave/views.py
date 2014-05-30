@@ -41,9 +41,11 @@ def get_client_config(request, config_id):
         # find the client config by id, if its public continue else, check
         # for to see if the user is the right one
         config = ClientConfiguration.objects.defer('content').get(id=config_id)
-
+        
         if not config.is_public: # this config is not public so only the creator can see it.
             if request.user.is_authenticated():
+                config = get_object_or_404(ClientConfiguration, id=config_id, userprofile=request.user.userprofile)
+            elif request.user.is_staff:
                 config = get_object_or_404(ClientConfiguration, id=config_id, userprofile=request.user.userprofile)
             else:
                 raise Http404
