@@ -367,7 +367,7 @@ Ext.onReady(function(){
         store: new Ext.data.SimpleStore({
                 fields: ['name','content_file'],
                 data : [
-                {% for file in weave_files%}['{{file.name}}','{{file.content_file}}'],{% endfor %}
+                {% for file in weave_files%}{%if forloop.first%}{%else%}['{{file.name}}','{{file.content_file}}'],{%endif%}{% endfor %}
                 ]
         }),
         displayField: 'name',

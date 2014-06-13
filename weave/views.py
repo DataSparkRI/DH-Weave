@@ -152,8 +152,9 @@ def embed_weave(request):
     
     if indicator_report_id != None:
         from datamart.models import IndicatorReport
+        from itertools import chain
         obj = IndicatorReport.objects.get(id=indicator_report_id)
-        ctx['data_files']=obj.client_configurations.all()
+        ctx['data_files']=list(chain([obj.clinet_configuration_base],obj.client_configurations.all()))
         
     
     if c_config is not None:
