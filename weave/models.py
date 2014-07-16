@@ -4,6 +4,18 @@ from weave.managers import *
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 import cgi
+from django.conf import settings
+
+class Image(models.Model):
+    photo = models.ImageField(upload_to='image')
+
+    def save(self, *args, **kwargs):
+        from shutil import copy2
+        super(Image, self).save(*args, **kwargs)
+        copy2(self.photo.path, settings.WEAVE_STORAGE)
+
+    def __unicode__(self):
+        return self.photo.name
 
 
 class HubEntityIndex(models.Model):
